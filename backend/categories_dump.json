@@ -1,0 +1,287 @@
+[
+  {
+    "id": 63,
+    "name": "Academic",
+    "parent_id": 49
+  },
+  {
+    "id": 6,
+    "name": "Accessories",
+    "parent_id": 1
+  },
+  {
+    "id": 13,
+    "name": "Accessories",
+    "parent_id": 8
+  },
+  {
+    "id": 46,
+    "name": "Automotive",
+    "parent_id": null
+  },
+  {
+    "id": 61,
+    "name": "Ayurveda",
+    "parent_id": 21
+  },
+  {
+    "id": 62,
+    "name": "Baby Care",
+    "parent_id": 21
+  },
+  {
+    "id": 44,
+    "name": "Baby Care",
+    "parent_id": 42
+  },
+  {
+    "id": 14,
+    "name": "Bags",
+    "parent_id": 8
+  },
+  {
+    "id": 21,
+    "name": "Beauty & Health",
+    "parent_id": null
+  },
+  {
+    "id": 40,
+    "name": "Beverages",
+    "parent_id": 38
+  },
+  {
+    "id": 48,
+    "name": "Bike Accessories",
+    "parent_id": 46
+  },
+  {
+    "id": 50,
+    "name": "Books",
+    "parent_id": 49
+  },
+  {
+    "id": 49,
+    "name": "Books & Education",
+    "parent_id": null
+  },
+  {
+    "id": 47,
+    "name": "Car Accessories",
+    "parent_id": 46
+  },
+  {
+    "id": 45,
+    "name": "Clothing",
+    "parent_id": 42
+  },
+  {
+    "id": 41,
+    "name": "Daily Use",
+    "parent_id": 38
+  },
+  {
+    "id": 19,
+    "name": "Decor",
+    "parent_id": 16
+  },
+  {
+    "id": 1,
+    "name": "Electronics",
+    "parent_id": null
+  },
+  {
+    "id": 8,
+    "name": "Fashion",
+    "parent_id": null
+  },
+  {
+    "id": 39,
+    "name": "Food Items",
+    "parent_id": 38
+  },
+  {
+    "id": 12,
+    "name": "Footwear",
+    "parent_id": 8
+  },
+  {
+    "id": 25,
+    "name": "Fragrance",
+    "parent_id": 21
+  },
+  {
+    "id": 17,
+    "name": "Furniture",
+    "parent_id": 16
+  },
+  {
+    "id": 38,
+    "name": "Grocery & Essentials",
+    "parent_id": null
+  },
+  {
+    "id": 35,
+    "name": "Gym Equipment",
+    "parent_id": 34
+  },
+  {
+    "id": 59,
+    "name": "Haircare",
+    "parent_id": 4
+  },
+  {
+    "id": 23,
+    "name": "Haircare",
+    "parent_id": 21
+  },
+  {
+    "id": 16,
+    "name": "Home & Living",
+    "parent_id": null
+  },
+  {
+    "id": 11,
+    "name": "Kids",
+    "parent_id": 8
+  },
+  {
+    "id": 42,
+    "name": "Kids & Baby",
+    "parent_id": null
+  },
+  {
+    "id": 18,
+    "name": "Kitchen",
+    "parent_id": 16
+  },
+  {
+    "id": 3,
+    "name": "Laptops",
+    "parent_id": 1
+  },
+  {
+    "id": 65,
+    "name": "Learning Toys",
+    "parent_id": 49
+  },
+  {
+    "id": 20,
+    "name": "Lighting",
+    "parent_id": 16
+  },
+  {
+    "id": 58,
+    "name": "Makeup",
+    "parent_id": 4
+  },
+  {
+    "id": 24,
+    "name": "Makeup",
+    "parent_id": 21
+  },
+  {
+    "id": 9,
+    "name": "Men",
+    "parent_id": 8
+  },
+  {
+    "id": 2,
+    "name": "Mobiles",
+    "parent_id": 1
+  },
+  {
+    "id": 56,
+    "name": "Musical Instruments",
+    "parent_id": 53
+  },
+  {
+    "id": 64,
+    "name": "Novels",
+    "parent_id": 49
+  },
+  {
+    "id": 53,
+    "name": "Others",
+    "parent_id": null
+  },
+  {
+    "id": 37,
+    "name": "Outdoor Sports",
+    "parent_id": 34
+  },
+  {
+    "id": 60,
+    "name": "Personal Care",
+    "parent_id": 21
+  },
+  {
+    "id": 54,
+    "name": "Pet Supplies",
+    "parent_id": 53
+  },
+  {
+    "id": 57,
+    "name": "Skincare",
+    "parent_id": 4
+  },
+  {
+    "id": 22,
+    "name": "Skincare",
+    "parent_id": 21
+  },
+  {
+    "id": 5,
+    "name": "Smart Gadgets",
+    "parent_id": 1
+  },
+  {
+    "id": 34,
+    "name": "Sports & Fitness",
+    "parent_id": null
+  },
+  {
+    "id": 51,
+    "name": "Stationery",
+    "parent_id": 49
+  },
+  {
+    "id": 52,
+    "name": "Study Material",
+    "parent_id": 49
+  },
+  {
+    "id": 4,
+    "name": "Tablets",
+    "parent_id": 1
+  },
+  {
+    "id": 55,
+    "name": "Tools",
+    "parent_id": 53
+  },
+  {
+    "id": 43,
+    "name": "Toys",
+    "parent_id": 42
+  },
+  {
+    "id": 7,
+    "name": "Watches",
+    "parent_id": 1
+  },
+  {
+    "id": 15,
+    "name": "Watches",
+    "parent_id": 8
+  },
+  {
+    "id": 10,
+    "name": "Women",
+    "parent_id": 8
+  },
+  {
+    "id": 36,
+    "name": "Yoga",
+    "parent_id": 34
+  }
+]

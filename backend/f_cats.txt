@@ -1,0 +1,37 @@
+[
+  {
+    "id": 13,
+    "name": "Accessories",
+    "parent_id": 8
+  },
+  {
+    "id": 14,
+    "name": "Bags",
+    "parent_id": 8
+  },
+  {
+    "id": 12,
+    "name": "Footwear",
+    "parent_id": 8
+  },
+  {
+    "id": 11,
+    "name": "Kids",
+    "parent_id": 8
+  },
+  {
+    "id": 9,
+    "name": "Men",
+    "parent_id": 8
+  },
+  {
+    "id": 15,
+    "name": "Watches",
+    "parent_id": 8
+  },
+  {
+    "id": 10,
+    "name": "Women",
+    "parent_id": 8
+  }
+]

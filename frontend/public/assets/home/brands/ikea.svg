@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 40" fill="currentColor">
+  <path d="M10 5h8v30h-8V5zm12 0h8v12h10V5h8v30h-8V25H30v10h-8V5zm32 0h22v6H62v6h18v6H62v6h22v6H54V5zm28 0h8v24h12v6H82V5z" opacity="0"/>
+  <text x="50" y="25" font-family="Arial, sans-serif" font-weight="900" font-size="20" text-anchor="middle">IKEA</text>
+</svg>

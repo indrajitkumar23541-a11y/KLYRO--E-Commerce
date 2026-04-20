@@ -1,0 +1,13 @@
+{
+  "name": "klyro-root",
+  "version": "1.0.0",
+  "description": "KLYRO Premium E-commerce Project",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,5 @@
+📚 Found 4 books in Database:
+- [123] Quantitative Aptitude for Competitive Examinations (Academic) -> Image: https://m.media-amazon.com/images/I/91-0mZ9645L.jpg
+- [125] Spoken English for Beginners (Academic) -> Image: https://m.media-amazon.com/images/I/71Yv3P0Z6fL.jpg
+- [122] Rich Dad Poor Dad (Novels) -> Image: https://m.media-amazon.com/images/I/81fJo9996-L.jpg
+- [124] As A Man Thinketh (Novels) -> Image: https://m.media-amazon.com/images/I/81+X6n7m70L.jpg
