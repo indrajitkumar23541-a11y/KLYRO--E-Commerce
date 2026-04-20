@@ -54,8 +54,3 @@ It is not just a marketplace — it is a **digital shopping experience engine** 
 - **`/assets`**: High-fidelity product visuals and brand graphics.
 
 ---
-
-<div align="center">
-  <p><b>KLYRO • BUILT FOR EXCELLENCE • v4.5.0</b></p>
-  <img src="https://img.shields.io/badge/Powered%20By-Antigravity-blue?style=flat-square" alt="Powered By Antigravity">
-</div>
