@@ -76,11 +76,39 @@ KLYRO is engineered for high-performance mobile access. To view the marketplace 
 
 ---
 
-## 📂 Architecture Overview
+## 🏗️ Project Structure
 
-- **`/frontend`**: React application hub, including custom context providers for Auth, Cart, and Themes.
-- **`/backend`**: Express API architecture following MVC patterns for secure data flow.
-- **`/assets`**: High-fidelity product visuals and brand graphics.
+KLYRO is architected as a decoupled full-stack application, ensuring scalability and separation of concerns.
+
+### 📂 Repository Breakdown
+
+| Module | Technical Role | Key Technologies |
+| :--- | :--- | :--- |
+| **`frontend/`** | Visual Interface & UX | React, Vite, Tailwind CSS, Recharts |
+| **`backend/`** | API Services & Business Logic | Node.js, Express, MySQL, JWT |
+| **`database/`** | Data Persistence | relational schema (`schema.sql`) |
+
+---
+
+### 💻 Frontend Architecture (`/frontend/src`)
+
+The frontend prioritizes modularity and high-fidelity design:
+*   **`pages/`**: Cinematic hubs for categories like Automotive, Fashion, and the Admin Dashboard.
+*   **`components/`**: Reusable UI elements including Glassmorphism cards and dynamic Navbars.
+*   **`context/`**: Global state management for Authentication, Cart, and Real-time Theme switching.
+*   **`api/`**: Centralized axios service layer for backend communication.
+*   **`index.css`**: Core design system with custom Tailwind/CSS variables.
+
+---
+
+### ⚙️ Backend Architecture (`/backend`)
+
+The backend follows a robust MVC-inspired pattern:
+*   **`controllers/`**: Logic handlers for authentication, products, and administrative actions.
+*   **`routes/`**: API endpoint definitions following RESTful principles.
+*   **`middleware/`**: Security layers including JWT verification and request validation.
+*   **`config/`**: Secure database connections and environment management.
+*   **`seed_sample.js`**: Automation scripts for populating the marketplace with high-quality data.
 
 ---
 
