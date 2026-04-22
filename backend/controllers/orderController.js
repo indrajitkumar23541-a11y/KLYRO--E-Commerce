@@ -68,7 +68,7 @@ const getOrderById = async (req, res) => {
                  WHERE oi.order_id = ?`, 
                 [order.id]
             );
-            res.json({ success: true, order: { ...order, orderItems: items } });
+            res.json({ success: true, order: { ...order, items: items } });
         } else {
             res.status(404).json({ success: false, message: 'Order not found' });
         }
@@ -82,7 +82,44 @@ const getOrderById = async (req, res) => {
 // @access  Private
 const getMyOrders = async (req, res) => {
     try {
-        const [orders] = await pool.query('SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC', [req.user.id]);
+        const query = `
+            SELECT o.*, oi.id as item_id, oi.product_id, oi.quantity, oi.price as item_price, p.name as product_name, p.image as product_image
+            FROM orders o
+            LEFT JOIN order_items oi ON o.id = oi.order_id
+            LEFT JOIN products p ON oi.product_id = p.id
+            WHERE o.user_id = ?
+            ORDER BY o.created_at DESC
+        `;
+        const [rows] = await pool.query(query, [req.user.id]);
+
+        // Group rows by order
+        const ordersMap = {};
+        rows.forEach(row => {
+            if (!ordersMap[row.id]) {
+                ordersMap[row.id] = {
+                    id: row.id,
+                    user_id: row.user_id,
+                    total_price: row.total_price,
+                    status: row.status,
+                    shipping_address: row.shipping_address,
+                    payment_method: row.payment_method,
+                    created_at: row.created_at,
+                    items: []
+                };
+            }
+            if (row.item_id) {
+                ordersMap[row.id].items.push({
+                    id: row.item_id,
+                    product_id: row.product_id,
+                    name: row.product_name,
+                    image: row.product_image,
+                    quantity: row.quantity,
+                    price: row.item_price
+                });
+            }
+        });
+
+        const orders = Object.values(ordersMap);
         res.json({ success: true, orders });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -126,10 +163,40 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
+// @desc    Request order return
+// @route   POST /api/orders/:id/return
+// @access  Private
+const requestOrderReturn = async (req, res) => {
+    try {
+        const { reason } = req.body;
+        const orderId = req.params.id;
+        const userId = req.user.id;
+
+        if (!reason) {
+            return res.status(400).json({ success: false, message: 'Return reason is required' });
+        }
+
+        const [order] = await pool.query('SELECT id FROM orders WHERE id = ? AND user_id = ?', [orderId, userId]);
+        if (order.length === 0) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        await pool.query(
+            'UPDATE orders SET return_status = ?, return_reason = ? WHERE id = ?',
+            ['pending', reason, orderId]
+        );
+
+        res.json({ success: true, message: 'Return request submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     addOrderItems,
     getOrderById,
     getMyOrders,
     getOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    requestOrderReturn
 };

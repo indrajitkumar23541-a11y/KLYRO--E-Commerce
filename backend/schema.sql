@@ -35,13 +35,16 @@ CREATE TABLE IF NOT EXISTS products (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     category_id INT,
+    seller_id INT DEFAULT 1,
     image VARCHAR(500),
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    FOREIGN KEY (seller_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX(name),
     INDEX(category_id),
-    INDEX(price)
+    INDEX(price),
+    INDEX(seller_id)
 );
 
 CREATE TABLE IF NOT EXISTS cart (

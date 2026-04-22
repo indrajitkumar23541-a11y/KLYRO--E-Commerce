@@ -84,7 +84,19 @@ const getProductById = async (req, res) => {
             // Track view (Background update)
             pool.query('UPDATE products SET views_count = views_count + 1 WHERE id = ?', [req.params.id]).catch(err => console.error('View tracking error:', err));
             
-            res.json({ success: true, product: products[0] });
+            // Fetch all images for this product
+            const [images] = await pool.query('SELECT image_url, is_primary FROM product_images WHERE product_id = ? ORDER BY is_primary DESC', [req.params.id]);
+            
+            // Fetch reviews for this product
+            const [reviews] = await pool.query(`
+                SELECT r.*, u.name as user_name 
+                FROM reviews r 
+                JOIN users u ON r.user_id = u.id 
+                WHERE r.product_id = ? 
+                ORDER BY r.created_at DESC
+            `, [req.params.id]);
+            
+            res.json({ success: true, product: { ...products[0], images, reviews } });
         } else {
             res.status(404).json({ success: false, message: 'Product not found' });
         }
@@ -175,11 +187,48 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+// @desc    Create a product review
+// @route   POST /api/products/:id/reviews
+// @access  Private
+const createProductReview = async (req, res) => {
+    try {
+        const { rating, comment } = req.body;
+        const productId = req.params.id;
+        const userId = req.user.id;
+
+        if (!rating) {
+            return res.status(400).json({ success: false, message: 'Rating is required' });
+        }
+
+        // Check if product exists
+        const [products] = await pool.query('SELECT id FROM products WHERE id = ?', [productId]);
+        if (products.length === 0) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        // Check if user has already reviewed this product
+        const [existing] = await pool.query('SELECT id FROM reviews WHERE user_id = ? AND product_id = ?', [userId, productId]);
+        if (existing.length > 0) {
+            return res.status(400).json({ success: false, message: 'You have already reviewed this product' });
+        }
+
+        await pool.query(
+            'INSERT INTO reviews (user_id, product_id, rating, comment) VALUES (?, ?, ?, ?)',
+            [userId, productId, rating, comment || '']
+        );
+
+        res.status(201).json({ success: true, message: 'Review added successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getProducts,
     getProductById,
     searchProducts,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    createProductReview
 };

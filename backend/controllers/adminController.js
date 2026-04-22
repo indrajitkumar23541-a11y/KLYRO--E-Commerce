@@ -96,10 +96,51 @@ const getSalesAnalytics = async (req, res) => {
     }
 };
 
+// @desc    Get platform settings
+// @route   GET /api/admin/settings
+// @access  Private/Admin
+const getAdminSettings = async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT setting_key, setting_value FROM settings');
+        const settings = {};
+        rows.forEach(row => {
+            let val = row.setting_value;
+            if (val === 'true') val = true;
+            if (val === 'false') val = false;
+            settings[row.setting_key] = val;
+        });
+        res.json({ success: true, settings });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Update platform settings
+// @route   PUT /api/admin/settings
+// @access  Private/Admin
+const updateAdminSettings = async (req, res) => {
+    try {
+        const settings = req.body; // { key1: val1, key2: val2 }
+        
+        for (const [key, value] of Object.entries(settings)) {
+            await pool.query(
+                'INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
+                [key, String(value), String(value)]
+            );
+        }
+
+        res.json({ success: true, message: 'Settings updated successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 module.exports = {
     getAdminStats,
     getAllUsers,
     deleteUser,
     updateUserRole,
-    getSalesAnalytics
+    getSalesAnalytics,
+    getAdminSettings,
+    updateAdminSettings
 };

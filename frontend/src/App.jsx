@@ -26,6 +26,10 @@ import SportsFitness from './pages/SportsFitness';
 import Others from './pages/Others';
 import Categories from './pages/Categories';
 import Favorites from './pages/Favorites';
+import SellerRegister from './pages/SellerRegister';
+import WriteReview from './pages/WriteReview';
+import TrackOrder from './pages/TrackOrder';
+import ReturnOrder from './pages/ReturnOrder';
 
 // Admin Imports
 import AdminRoute from './components/AdminRoute';
@@ -39,6 +43,18 @@ import PaymentList from './pages/admin/PaymentList';
 import Analytics from './pages/admin/Analytics';
 import Settings from './pages/admin/Settings';
 
+// Seller Imports
+import SellerRoute from './components/SellerRoute';
+import SellerDashboard from './pages/seller/Dashboard';
+import SellerProducts from './pages/seller/ProductManagement';
+import SellerOrders from './pages/seller/OrderManagement';
+import SellerAnalytics from './pages/seller/Analytics';
+import SellerSettings from './pages/seller/Settings';
+import CustomerManagement from './pages/seller/CustomerManagement';
+import ReviewManagement from './pages/seller/ReviewManagement';
+import MarketingManagement from './pages/seller/MarketingManagement';
+import Payments from './pages/seller/Payments';
+
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -48,7 +64,7 @@ import SettingsPage from './pages/Settings'; // Renamed to avoid name clash with
 
 const AppContent = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAdminRoute = location.pathname.startsWith('/admin') || location.pathname.startsWith('/seller');
 
   return (
     <div className={`flex flex-col min-h-screen ${isAdminRoute ? '' : 'bg-gray-50'}`}>
@@ -80,6 +96,10 @@ const AppContent = () => {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/register-seller" element={<SellerRegister />} />
+          <Route path="/product/:id/review" element={<WriteReview />} />
+          <Route path="/order/:id/track" element={<TrackOrder />} />
+          <Route path="/order/:id/return" element={<ReturnOrder />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminRoute />}>
@@ -92,6 +112,20 @@ const AppContent = () => {
             <Route path="payments" element={<PaymentList />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />
+          </Route>
+
+          {/* Seller Routes */}
+          <Route path="/seller" element={<SellerRoute />}>
+            <Route index element={<SellerDashboard />} />
+            <Route path="products" element={<SellerProducts />} />
+            <Route path="inventory" element={<SellerProducts />} />
+            <Route path="orders" element={<SellerOrders />} />
+            <Route path="analytics" element={<SellerAnalytics />} />
+            <Route path="customers" element={<CustomerManagement />} />
+            <Route path="reviews" element={<ReviewManagement />} />
+            <Route path="marketing" element={<MarketingManagement />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="settings" element={<SellerSettings />} />
           </Route>
         </Routes>
       </main>
