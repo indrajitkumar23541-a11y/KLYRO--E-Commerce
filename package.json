@@ -5,7 +5,12 @@
   "scripts": {
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "start:gateway": "cd services/api-gateway && npm run dev",
+    "start:identity": "cd services/identity-service && npm run dev",
+    "start:product": "cd services/product-service && npm run dev",
+    "start:order": "cd services/order-service && npm run dev",
+    "dev:micro": "concurrently \"npm run start:gateway\" \"npm run start:identity\" \"npm run start:product\" \"npm run start:order\" \"npm run backend\" \"npm run frontend\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -8,9 +8,16 @@ const Footer = () => {
             <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24">
                 
                 {/* Brand */}
-                <div className="space-y-6">
-                    <Link to="/" className="text-2xl font-black tracking-tighter text-white uppercase italic">
-                        Klyro<span className="text-[#a5b4fc]">.</span>
+                <div className="space-y-6 text-center sm:text-left">
+                    <Link to="/" className="flex items-center gap-3 group justify-center sm:justify-start">
+                        <img 
+                            src="/assets/klyro-logo.png" 
+                            alt="KLYRO" 
+                            className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-500" 
+                        />
+                        <span className="text-2xl font-black uppercase tracking-[0.25em] text-white whitespace-nowrap">
+                            KLYRO
+                        </span>
                     </Link>
                     <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                         Elevating your wardrobe with curated luxury pieces. Defining the future of digital fashion commerce.

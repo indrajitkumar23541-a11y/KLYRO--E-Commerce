@@ -99,13 +99,13 @@ const Others = () => {
     };
 
     return (
-        <div className="bg-[#fdfaf5] min-h-screen pt-[100px] md:pt-[120px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fdfaf5] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans relative">
             {/* Paper Texture Overlay */}
 
 
             {/* SUB-NAVBAR CATEGORIES */}
-            <div className="bg-white border-b sticky top-[64px] md:top-[72px] lg:top-[120px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
-                <div className="max-w-[1440px] mx-auto flex items-center h-12 md:h-14 px-4 md:px-6 gap-6 md:gap-8">
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+                <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button 
                         onClick={() => { setActiveSubId(null); navigate('/others'); }} 
                         className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-[#5D6B60] border-[#5D6B60]' : 'text-gray-400 border-transparent hover:text-[#5D6B60]'}`}

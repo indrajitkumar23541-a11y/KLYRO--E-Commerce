@@ -144,7 +144,7 @@ const OrderManagement = () => {
                     <div className="bg-slate-900 rounded-[3rem] p-10 text-white border border-slate-800 shadow-2xl relative overflow-hidden group/header">
                         {/* Abstract Background Aesthetic */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none group-hover/header:bg-blue-600/20 transition-all duration-700"></div>
-                        
+
                         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 relative z-10">
                             <div className="flex items-center gap-6">
                                 <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-tr from-blue-600 to-blue-400 flex items-center justify-center shadow-2xl shadow-blue-500/40">
@@ -279,7 +279,7 @@ const OrderManagement = () => {
                                 {/* Section: Logistics Vector */}
                                 <div className="p-8 bg-slate-900 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group/notif">
                                     <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[40px]"></div>
-                                    
+
                                     <div className="flex items-center justify-between mb-8">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-blue-400 border border-white/5 shadow-inner">
@@ -350,7 +350,7 @@ const OrderManagement = () => {
 
                                 {/* Section: Global Workflow Stage */}
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2 font-black italic">Procedural Stage</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2 italic">Procedural Stage</label>
                                     <div className="relative">
                                         <select
                                             value={selectedOrder.status}
@@ -399,7 +399,7 @@ const OrderManagement = () => {
                                 {/* Section: Payload Manifest */}
                                 <div className="space-y-6">
                                     <div className="flex items-center justify-between px-2">
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] font-black italic">Payload Manifest</span>
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] italic">Payload Manifest</span>
                                         <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">{selectedOrder.items?.length || 0} SELECTIONS</span>
                                     </div>
                                     <div className="space-y-4">
@@ -429,11 +429,11 @@ const OrderManagement = () => {
                                     <p className="text-2xl font-black italic text-slate-900 mt-1">₹{(parseFloat(selectedOrder.total_price) || 0).toLocaleString()}</p>
                                 </div>
                                 <div className="text-right">
-                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Payment Vector</p>
-                                     <div className="flex items-center gap-2 mt-1.5 justify-end">
-                                          <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><CreditCard size={10} /></div>
-                                          <p className="text-xs font-black uppercase text-slate-700">{selectedOrder.payment_method}</p>
-                                     </div>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Payment Vector</p>
+                                    <div className="flex items-center gap-2 mt-1.5 justify-end">
+                                        <div className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><CreditCard size={10} /></div>
+                                        <p className="text-xs font-black uppercase text-slate-700">{selectedOrder.payment_method}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -442,7 +442,7 @@ const OrderManagement = () => {
                             <div className="w-32 h-32 rounded-full border-2 border-slate-100 flex items-center justify-center mb-8 bg-slate-50">
                                 <Clock size={64} strokeWidth={1} className="opacity-20 text-slate-400" />
                             </div>
-                            <h4 className="text-lg font-black text-slate-300 uppercase tracking-[0.4em] italic font-black">Awaiting Vector</h4>
+                            <h4 className="text-lg font-black text-slate-300 uppercase tracking-[0.4em] italic">Awaiting Vector</h4>
                             <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] mt-6 max-w-[300px] leading-relaxed">Select an active order from the manifest to initiate deep procedural analysis and orchestration.</p>
                             <div className="mt-12 flex gap-2">
                                 <div className="w-2 h-2 rounded-full bg-slate-100"></div>
@@ -465,8 +465,8 @@ const OrderManagement = () => {
                                     <Package size={24} />
                                 </div>
                                 <div className="text-left">
-                                     <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] block leading-none">Internal Logistics</span>
-                                     <h2 className="text-2xl font-black italic tracking-tighter mt-1">Certified Handover Label</h2>
+                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] block leading-none">Internal Logistics</span>
+                                    <h2 className="text-2xl font-black italic tracking-tighter mt-1">Certified Handover Label</h2>
                                 </div>
                             </div>
                         </div>
@@ -495,14 +495,14 @@ const OrderManagement = () => {
                                     <ShieldAlert size={100} strokeWidth={1} className="text-slate-300" />
                                 </div>
                             </div>
-                            
+
                             {/* Barcode Mock */}
                             <div className="p-10 bg-slate-900 rounded-[3rem] border-4 border-slate-800 flex flex-col items-center gap-8 relative overflow-hidden group/barcode">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent"></div>
                                 <div className="w-full h-32 flex items-center justify-between gap-1 relative z-10">
                                     {Array.from({ length: 48 }).map((_, i) => (
-                                        <div 
-                                            key={i} 
+                                        <div
+                                            key={i}
                                             className={`h-full bg-white rounded-full transition-transform duration-500 group-hover/barcode:scale-y-75 ${i % 3 === 0 ? 'w-2' : i % 5 === 0 ? 'w-[1px] opacity-40' : 'w-1'}`}
                                             style={{ transitionDelay: `${i * 10}ms` }}
                                         />
@@ -513,7 +513,7 @@ const OrderManagement = () => {
                                     <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-3">Auth Key: SEC-VET-LOG-X99</p>
                                 </div>
                             </div>
-                            
+
                             <div className="flex gap-4">
                                 <button onClick={() => setIsLabelModalOpen(false)} className="flex-1 bg-slate-100 text-slate-600 py-6 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.25em] hover:bg-slate-200 transition-all active:scale-95">Edit Config</button>
                                 <button onClick={() => window.print()} className="flex-[2] bg-slate-900 text-white py-6 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.35em] shadow-2xl shadow-slate-900/20 hover:scale-[1.02] active:scale-95 transition-all outline-none flex items-center justify-center gap-3">

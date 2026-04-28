@@ -10,14 +10,29 @@
   --text-color: #333333;
   --bg-color: #f2f5f8;
   --accent-color: #717fe0;
+  --card-bg: #ffffff;
+  --card-border: rgba(0,0,0,0.05);
+  --surface: #fcfcfc;
+}
+
+.dark {
+  --primary-color: #717fe0;
+  --secondary-color: #5b6bc0;
+  --text-color: #e4e4e7;
+  --bg-color: #0a0a0c;
+  --accent-color: #717fe0;
+  --card-bg: rgba(255,255,255,0.05);
+  --card-border: rgba(255,255,255,0.08);
+  --surface: #111114;
 }
 
 @layer base {
   body {
-    @apply bg-white font-sans antialiased overflow-x-hidden;
+    @apply font-sans antialiased overflow-x-hidden;
     color: var(--text-color);
     background-color: var(--bg-color);
     scroll-behavior: smooth;
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 }
 

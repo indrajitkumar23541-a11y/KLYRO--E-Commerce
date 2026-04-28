@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Search, User, Menu, X, ChevronDown, Heart, ArrowRight, Car, Sparkles, Book, Smartphone, Leaf, Armchair, Dumbbell, Tag, Moon, Settings, ChevronRight, Zap, Package } from 'lucide-react';
+import { ShoppingBag, Search, User, Menu, X, ChevronDown, Heart, ArrowRight, Car, Sparkles, Book, Smartphone, Leaf, Armchair, Dumbbell, Tag, Moon, Settings, ChevronRight, Zap, Package, Briefcase } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
@@ -52,21 +52,26 @@ const Navbar = () => {
         <>
             <header className="fixed top-0 left-0 w-full z-[100] shadow-2xl animate-reveal">
                 {/* TOP ROW: Logo, Search, User Icons */}
-                <div className="header-top h-[64px] md:h-[76px] flex items-center px-4 md:px-10 lg:px-16 gap-4 md:gap-10 bg-black/80 backdrop-blur-2xl border-b border-white/10 relative overflow-hidden">
+                <div className="header-top h-[56px] md:h-[64px] flex items-center px-4 md:px-10 lg:px-16 gap-4 md:gap-10 bg-black/80 backdrop-blur-2xl border-b border-white/10 relative overflow-hidden">
                     {/* Background Glow Effect */}
                     <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
                     <div className="absolute top-0 right-0 w-96 h-full bg-gradient-to-l from-[#717fe0]/5 to-transparent pointer-events-none"></div>
 
                     {/* Mobile Menu Toggle (Left) */}
-                    <button onClick={() => setIsMenuOpen(true)} className="lg:hidden w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 transition-all active:scale-90 border border-white/10 z-20">
+                    <button onClick={() => setIsMenuOpen(true)} className="lg:hidden w-10 h-10 flex items-center justify-center rounded-2xl bg-white/5 hover:bg-white/10 transition-all active:scale-90 border border-white/10 z-20">
                         <Menu size={22} className="text-white" />
                     </button>
 
                     {/* Logo (Centered on Mobile, Left on Desktop) */}
                     <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 z-10">
-                        <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#717fe0] to-[#9fa8da] flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:rotate-6 transition-transform">
-                                <ShoppingBag size={20} className="text-white" />
+                        <Link to="/" onClick={closeMenu} className="flex items-center gap-3 group">
+                            <div className="relative">
+                                <div className="absolute -inset-2 bg-[#717fe0]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <img 
+                                    src="/assets/klyro-logo.png" 
+                                    alt="KLYRO" 
+                                    className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-500 relative z-10" 
+                                />
                             </div>
                             <span className="text-2xl font-black uppercase tracking-[0.25em] text-white whitespace-nowrap font-serif-premium hidden sm:block">
                                 KLYRO
@@ -78,7 +83,7 @@ const Navbar = () => {
                     <div className="flex-grow hidden lg:flex justify-center max-w-5xl mx-auto">
                         <form onSubmit={handleSearch} className="w-full relative flex group scale-100 focus-within:scale-[1.02] transition-transform duration-500">
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-                            <div className="relative w-full flex bg-white/5 h-12 rounded-2xl border border-white/10 focus-within:border-[#717fe0]/60 focus-within:bg-white/10 transition-all overflow-hidden backdrop-blur-xl">
+                            <div className="relative w-full flex bg-white/5 h-10 rounded-2xl border border-white/10 focus-within:border-[#717fe0]/60 focus-within:bg-white/10 transition-all overflow-hidden backdrop-blur-xl">
                                 <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-[#717fe0] transition-colors" />
                                 <input
                                     type="text"
@@ -197,7 +202,7 @@ const Navbar = () => {
 
 
                 {/* BOTTOM ROW: Categories */}
-                <nav className="header-bottom h-13 hidden lg:flex items-center relative shadow-inner overflow-x-auto no-scrollbar w-full bg-white/5 backdrop-blur-3xl border-b border-white/5">
+                <nav className="header-bottom h-12 hidden lg:flex items-center relative shadow-inner overflow-x-auto no-scrollbar w-full bg-white/5 backdrop-blur-3xl border-b border-white/5">
                     <div className="flex h-full min-w-max mx-auto px-4 xl:px-12">
                         {categoryTree.map((parent) => (
                             <div

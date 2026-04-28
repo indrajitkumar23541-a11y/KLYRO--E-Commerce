@@ -13,9 +13,9 @@ const ProductCard = ({ product, v2, index }) => {
     // Modern Compact Card (Mobile First)
     return (
         <>
-            <div className="group relative bg-white overflow-hidden transition-all duration-500 hover:shadow-xl rounded-2xl md:rounded-3xl border border-gray-100 flex flex-col h-full active:scale-[0.98]">
+            <div className="group relative bg-[var(--card-bg)] overflow-hidden transition-all duration-500 hover:shadow-xl rounded-2xl md:rounded-3xl border border-[var(--card-border)] flex flex-col h-full active:scale-[0.98]">
                 {/* Image Area */}
-                <div className="relative aspect-square overflow-hidden bg-gray-50/50 flex items-center justify-center p-3 md:p-6">
+                <div className="relative aspect-square overflow-hidden bg-[var(--surface)] flex items-center justify-center p-3 md:p-6">
                     <Link to={`/product/${product.id}`} className="block w-full h-full">
                         <img 
                             src={product.image || 'https://via.placeholder.com/400'} 
@@ -44,7 +44,7 @@ const ProductCard = ({ product, v2, index }) => {
                             <span className="text-[8px] md:text-[10px] font-black text-gray-400">4.5</span>
                         </div>
                         
-                        <Link to={`/product/${product.id}`} className="text-[11px] md:text-[15px] font-bold text-gray-800 hover:text-[#717fe0] transition-colors line-clamp-2 leading-tight">
+                        <Link to={`/product/${product.id}`} className="text-[11px] md:text-[15px] font-bold text-[var(--text-color)] hover:text-[#717fe0] transition-colors line-clamp-2 leading-tight">
                             {product.name}
                         </Link>
                     </div>

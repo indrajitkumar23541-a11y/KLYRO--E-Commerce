@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Indrajit@7061
+      MYSQL_DATABASE: klyro_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+      - REDIS_HOST=redis
+      - KAFKA_BROKERS=kafka:29092
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+    container_name: api-gateway
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - IDENTITY_SERVICE_URL=http://identity-service:5002
+      - PRODUCT_SERVICE_URL=http://product-service:5003
+      - ORDER_SERVICE_URL=http://order-service:5004
+      - MONOLITH_SERVICE_URL=http://backend:5001
+      - SEARCH_SERVICE_URL=http://search-service:5005
+      - AI_SERVICE_URL=http://ai-service:5007
+    depends_on:
+      - identity-service
+      - product-service
+      - order-service
+      - backend
+      - search-service
+      - ai-service
+
+  identity-service:
+    build:
+      context: ./services/identity-service
+    container_name: identity-service
+    ports:
+      - "5002:5002"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+    depends_on:
+      - mysql
+
+  product-service:
+    build:
+      context: ./services/product-service
+    container_name: product-service
+    ports:
+      - "5003:5003"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+      - KAFKA_BROKERS=kafka:29092
+    depends_on:
+      - mysql
+
+  order-service:
+    build:
+      context: ./services/order-service
+    container_name: order-service
+    ports:
+      - "5004:5004"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+      - KAFKA_BROKERS=kafka:29092
+    depends_on:
+      - mysql
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+    container_name: notification-service
+    ports:
+      - "5006:5006"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+      - KAFKA_BROKERS=kafka:29092
+    depends_on:
+      - mysql
+      - kafka
+
+  search-service:
+    build:
+      context: ./services/search-service
+    container_name: search-service
+    ports:
+      - "5005:5005"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Indrajit@7061
+      - DB_NAME=klyro_db
+    depends_on:
+      - mysql
+
+  ai-service:
+    build:
+      context: ./services/ai-service
+    container_name: ai-service
+    ports:
+      - "5007:5007"
+    environment:
+      - SEARCH_SERVICE_URL=http://search-service:5005
+      - OLLAMA_URL=http://ollama:11434
+    depends_on:
+      - search-service
+      - ollama
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api-gateway
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  mysql_data:
+  ollama_data:

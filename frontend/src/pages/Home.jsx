@@ -86,7 +86,7 @@ const Home = () => {
     const mobileCategoryIcons = homeCategories.slice(0, 6);
 
     return (
-        <div className="bg-white min-h-screen pt-[64px] md:pt-[120px] pb-32 md:pb-24 page-transition overflow-x-hidden">
+        <div className="bg-[var(--bg-color)] min-h-screen pt-[56px] md:pt-[112px] pb-32 md:pb-24 page-transition overflow-x-hidden transition-colors duration-500">
             
             {/* MOBILE ONLY: Premium Hero Section (Overlay Style) */}
             <div className="md:hidden relative w-full h-[460px] overflow-hidden">
@@ -136,7 +136,7 @@ const Home = () => {
             </section>
 
             {/* MOBILE ONLY: Refined Trust Markers (List Style) */}
-            <section className="md:hidden bg-white px-2 mb-12">
+            <section className="md:hidden bg-[var(--card-bg)] px-2 mb-12">
                 <div className="flex flex-col">
                     {[
                         { text: 'Shop Top Brands', id: 1 },
@@ -145,7 +145,7 @@ const Home = () => {
                     ].map((item, idx) => (
                         <div 
                             key={item.id} 
-                            className={`flex items-center gap-4 px-10 py-5 ${idx !== 2 ? 'border-b border-gray-100' : ''}`}
+                            className={`flex items-center gap-4 px-10 py-5 ${idx !== 2 ? 'border-b border-[var(--card-border)]' : ''}`}
                         >
                             <div className="w-6 h-6 rounded-full bg-[#2b5a9a] flex items-center justify-center shadow-lg shadow-blue-500/20">
                                 <ShieldCheck size={12} className="text-white" strokeWidth={3} />
@@ -159,7 +159,7 @@ const Home = () => {
             </section>
 
             {/* MOBILE ONLY: Premium Icon Category Grid */}
-            <section className="md:hidden bg-gray-50/80 px-4 py-16 mb-12">
+            <section className="md:hidden bg-[var(--surface)] px-4 py-16 mb-12">
                 <div className="grid grid-cols-3 gap-y-12 gap-x-4">
                     {mobileCategoryIcons.map((cat) => (
                         <Link 
@@ -167,7 +167,7 @@ const Home = () => {
                             to={cat.path} 
                             className="flex flex-col items-center gap-4 active:scale-95 transition-all"
                         >
-                            <div className="w-full aspect-square bg-white rounded-3xl shadow-xl flex items-center justify-center p-3 border border-white">
+                            <div className="w-full aspect-square bg-[var(--card-bg)] rounded-3xl shadow-xl flex items-center justify-center p-3 border border-[var(--card-border)]">
                                 <img 
                                     src={cat.img} 
                                     alt={cat.name} 
@@ -195,7 +195,7 @@ const Home = () => {
                                 cat.name.toLowerCase().includes('auto') ? '/automotive' : 
                                 `/products?category_id=${cat.id}`
                             }
-                            className="bg-white rounded-xl p-4 md:p-8 flex flex-col items-center justify-between shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-white group h-[200px] md:h-[260px]"
+                            className="bg-[var(--card-bg)] rounded-xl p-4 md:p-8 flex flex-col items-center justify-between shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[var(--card-border)] group h-[200px] md:h-[260px]"
                         >
                             <div className="w-full flex-grow flex items-center justify-center p-2 md:p-4 overflow-hidden">
                                 <img src={cat.img} alt={cat.name} className="max-h-full max-w-full object-contain drop-shadow-2xl opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-700" />
@@ -208,21 +208,21 @@ const Home = () => {
 
             {/* DESKTOP ONLY: Benefits */}
             <section className="hidden md:grid max-w-[1440px] mx-auto px-4 md:px-6 mb-16 md:mb-24 grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                <div className="bg-white p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-primary-color">
+                <div className="bg-[var(--card-bg)] p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-primary-color">
                     <div className="bg-primary-color/10 p-4 md:p-5 rounded-full text-primary-color"><Truck size={28} /></div>
                     <div>
                         <h4 className="font-black uppercase text-xs md:text-sm text-text-color">Fast Logistic</h4>
                         <p className="text-[10px] md:text-xs text-gray-400 font-bold">Orders ₹5000+</p>
                     </div>
                 </div>
-                <div className="bg-white p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-accent-color">
+                <div className="bg-[var(--card-bg)] p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-accent-color">
                     <div className="bg-accent-color/10 p-4 md:p-5 rounded-full text-accent-color"><ShieldCheck size={28} /></div>
                     <div>
                         <h4 className="font-black uppercase text-xs md:text-sm text-text-color">Secure Checkout</h4>
                         <p className="text-[10px] md:text-xs text-gray-400 font-bold">Verified protection</p>
                     </div>
                 </div>
-                <div className="bg-white p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-primary-color">
+                <div className="bg-[var(--card-bg)] p-6 md:p-8 rounded-xl flex items-center gap-4 md:gap-6 shadow-md border-b-4 border-primary-color">
                     <div className="bg-primary-color/10 p-4 md:p-5 rounded-full text-primary-color"><Zap size={28} /></div>
                     <div>
                         <h4 className="font-black uppercase text-xs md:text-sm text-text-color">24/7 Support</h4>
@@ -233,7 +233,7 @@ const Home = () => {
 
             {/* Product Highlights */}
             <section className="max-w-[1440px] mx-auto px-4 md:px-6">
-                <div className="flex flex-col md:flex-row justify-between items-baseline mb-8 md:mb-12 gap-4 md:gap-6 border-b border-gray-200 pb-6 md:pb-8">
+                <div className="flex flex-col md:flex-row justify-between items-baseline mb-8 md:mb-12 gap-4 md:gap-6 border-b border-[var(--card-border)] pb-6 md:pb-8">
                     <div className="space-y-1 md:space-y-2">
                         <h2 className="text-xl md:text-4xl font-black uppercase text-text-color tracking-tight">Product Highlights</h2>
                     </div>

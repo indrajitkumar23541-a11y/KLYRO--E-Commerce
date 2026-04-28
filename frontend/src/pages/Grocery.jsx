@@ -42,13 +42,13 @@ const Grocery = () => {
     const subNavbarItems = ['Grocery', 'Fruits', 'Vegetables', 'Dairy', 'Staples', 'Snacks', 'Household'];
 
     return (
-        <div className="bg-[#fffdfa] min-h-screen pt-[100px] md:pt-[120px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fffdfa] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans relative">
             {/* Background Texture Overlay */}
             <div className="bg-paper" />
 
             {/* SUB-NAVBAR CATEGORIES (Sticky Organic Theme) */}
-            <div className="bg-white border-b sticky top-[64px] md:top-[72px] lg:top-[120px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
-                <div className="max-w-[1440px] mx-auto flex items-center h-12 md:h-14 px-4 md:px-6 gap-6 md:gap-8">
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+                <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button onClick={() => navigate('/grocery')} className="text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 border-[#bc612c] text-[#bc612c] transition-all">Grocery</button>
                     {subNavbarItems.filter(item => item !== 'Grocery').map((item) => (
                         <button 

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import Footer from './components/Footer';
+import ProductExpert from './components/ProductExpert';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -30,6 +31,7 @@ import SellerRegister from './pages/SellerRegister';
 import WriteReview from './pages/WriteReview';
 import TrackOrder from './pages/TrackOrder';
 import ReturnOrder from './pages/ReturnOrder';
+import SearchPage from './pages/SearchPage';
 
 // Admin Imports
 import AdminRoute from './components/AdminRoute';
@@ -100,6 +102,7 @@ const AppContent = () => {
           <Route path="/product/:id/review" element={<WriteReview />} />
           <Route path="/order/:id/track" element={<TrackOrder />} />
           <Route path="/order/:id/return" element={<ReturnOrder />} />
+          <Route path="/search" element={<SearchPage />} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminRoute />}>
@@ -129,6 +132,7 @@ const AppContent = () => {
           </Route>
         </Routes>
       </main>
+      {!isAdminRoute && <ProductExpert />}
       {!isAdminRoute && <BottomNav />}
       {!isAdminRoute && <Footer />}
     </div>
@@ -139,7 +143,7 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ThemeProvider>
             <AppContent />
           </ThemeProvider>
