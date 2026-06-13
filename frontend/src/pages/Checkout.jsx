@@ -21,6 +21,8 @@ const Checkout = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [processing, setProcessing] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState(null); // 'success', 'error'
 
     // Form States
     const [address, setAddress] = useState({
@@ -44,8 +46,23 @@ const Checkout = () => {
     };
 
     const handlePlaceOrder = async () => {
+        setProcessing(true);
         setLoading(true);
+        
+        // Cinematic Delay for Payment Processing
+        await new Promise(resolve => setTimeout(resolve, 3500));
+
         try {
+            // Simulation logic: 10% chance of payment failure for realism
+            const isFailed = Math.random() < 0.1;
+            
+            if (isFailed && paymentMethod !== 'COD') {
+                setPaymentStatus('error');
+                setProcessing(false);
+                setLoading(false);
+                return;
+            }
+
             const orderData = {
                 orderItems: cartItems.map(item => ({
                     product: item.product.id,
@@ -59,14 +76,54 @@ const Checkout = () => {
 
             const result = await checkout(orderData);
             if (result && result.success) {
-                navigate(`/order-success/${result.orderId}`); 
+                setPaymentStatus('success');
+                // Brief success pause
+                setTimeout(() => {
+                    navigate(`/order-success/${result.orderId}`); 
+                }, 1500);
             }
         } catch (error) {
             console.error('Order Placement Error:', error);
+            setPaymentStatus('error');
+            setProcessing(false);
         } finally {
             setLoading(false);
         }
     };
+
+    if (processing) {
+        return (
+            <div className="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center p-8 text-center overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent"></div>
+                
+                {/* Orbital Loader */}
+                <div className="relative w-48 h-48 mb-12">
+                    <div className="absolute inset-0 border-4 border-blue-500/10 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin duration-[2s]"></div>
+                    <div className="absolute inset-4 border-2 border-emerald-500/10 rounded-full"></div>
+                    <div className="absolute inset-4 border-2 border-b-emerald-500 rounded-full animate-spin-reverse duration-[1.5s]"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <ShieldCheck size={48} className="text-white animate-pulse" />
+                    </div>
+                </div>
+
+                <div className="space-y-4 relative z-10">
+                    <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tighter">
+                        {paymentStatus === 'success' ? 'Payment Verified' : 'Securing Transaction'}
+                    </h2>
+                    <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-[0.3em] max-w-xs mx-auto leading-relaxed">
+                        {paymentStatus === 'success' 
+                            ? 'Redirecting to your digital vault...' 
+                            : 'Communicating with KLYRO Secure Gateway. Please do not refresh.'}
+                    </p>
+                </div>
+
+                {/* Cyberpunk Decorative Elements */}
+                <div className="absolute bottom-12 left-12 w-32 h-[1px] bg-gradient-to-r from-blue-500 to-transparent opacity-20"></div>
+                <div className="absolute top-12 right-12 w-32 h-[1px] bg-gradient-to-l from-emerald-500 to-transparent opacity-20"></div>
+            </div>
+        );
+    }
 
     if (cartItems.length === 0) {
         return (
@@ -251,8 +308,24 @@ const Checkout = () => {
                                     Order Review
                                 </h2>
 
-                                <div className="space-y-8">
-                                    {/* Order Items Summary */}
+                                    <div className="space-y-8">
+                                        {paymentStatus === 'error' && (
+                                            <div className="p-6 bg-rose-50 border border-rose-100 rounded-3xl flex items-center gap-4 animate-shake">
+                                                <XCircle className="text-rose-500" size={24} />
+                                                <div className="flex-1">
+                                                    <p className="font-black text-rose-900 text-xs uppercase tracking-widest">Transaction Declined</p>
+                                                    <p className="text-[10px] text-rose-600 font-bold uppercase mt-1">Your bank rejected the request. Please use another method.</p>
+                                                </div>
+                                                <button 
+                                                    onClick={() => setPaymentStatus(null)}
+                                                    className="px-4 py-2 bg-rose-100 text-rose-600 rounded-xl text-[9px] font-black uppercase hover:bg-rose-200"
+                                                >
+                                                    Retry
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {/* Order Items Summary */}
                                     <div className="space-y-4">
                                         <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">Items to Deliver</h4>
                                         <div className="divide-y divide-slate-50 border border-slate-50 rounded-2xl overflow-hidden">

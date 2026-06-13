@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60">
+  <path d="M10,35 Q30,10 50,35 T90,35" stroke="#00A19D" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <text x="50" y="55" font-family="Arial, sans-serif" font-weight="900" font-size="18" text-anchor="middle" fill="#00A19D" letter-spacing="-1">Pampers</text>
+  <circle cx="50" cy="20" r="12" fill="#FFC72C" opacity="0.8"/>
+</svg>

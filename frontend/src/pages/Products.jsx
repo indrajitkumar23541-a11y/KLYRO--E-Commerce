@@ -116,27 +116,45 @@ const Products = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                    <div className="hidden lg:flex items-center gap-6">
-                             <div className="flex items-center gap-4 text-[#888] text-sm font-medium">
+                        <div className="hidden lg:flex items-center gap-6">
+                            <div className="flex items-center gap-4 text-[#888] text-sm font-medium">
                                 <button className="text-[#333]"><LayoutGrid size={20} /></button>
                                 <button className="hover:text-[#333] transition-colors"><List size={20} /></button>
-                             </div>
-                             <div className="h-8 w-[1px] bg-[#e6e6e6]"></div>
-                             <p className="text-[11px] font-bold text-[#888] uppercase tracking-widest">
-                                 {products.length} Products Found
-                             </p>
-                         </div>
+                            </div>
+                            <div className="h-8 w-[1px] bg-[#e6e6e6]"></div>
+                            <p className="text-[11px] font-bold text-[#888] uppercase tracking-widest">
+                                {products.length} Products Found
+                            </p>
+                        </div>
+                        <button 
+                            onClick={() => setShowMobileFilters(true)}
+                            className="lg:hidden flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-full text-xs font-black uppercase tracking-wider shadow-md active:scale-95 transition-all"
+                        >
+                            <SlidersHorizontal size={14} /> Filters
+                        </button>
                     </div>
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-12">
-                    {/* Product Grid - Full Width */}
-                    <div className="flex-grow">
-                        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 transition-opacity duration-500 ${loading ? 'opacity-30' : 'opacity-100'}`}>
+                    {/* Sidebar filters (Desktop view) */}
+                    <div className="hidden lg:block lg:w-1/4">
+                        <Sidebar 
+                            categories={categories}
+                            activeCategoryId={categoryId}
+                            onCategoryChange={handleCategoryChange}
+                            onPriceFilter={handlePriceFilter}
+                            initialMin={minPrice}
+                            initialMax={maxPrice}
+                        />
+                    </div>
+
+                    {/* Product Grid */}
+                    <div className="flex-grow lg:w-3/4">
+                        <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 transition-opacity duration-500 ${loading ? 'opacity-30' : 'opacity-100'}`}>
                             {products.length > 0 ? (
                                 products.map(p => <ProductCard key={p.id} product={p} />)
                             ) : (
-                                <div className="col-span-full py-40 text-center border-2 border-dashed border-[#e6e6e6] rounded-xl bg-[#f9f9f9]">
+                                <div className="col-span-full py-40 text-center border-2 border-dashed border-[#e6e6e6] rounded-xl bg-[#f9f9f9] px-4">
                                     <h3 className="text-2xl font-black text-[#ccc] uppercase tracking-widest mb-4">
                                         No products available.
                                     </h3>
@@ -165,7 +183,6 @@ const Products = () => {
                                     <div className="flex items-center gap-2 px-4">
                                         {[...Array(totalPages)].map((_, i) => {
                                             const pageNum = i + 1;
-                                            // Simple logic for brevity, can be expanded for many pages
                                             if (totalPages > 7 && Math.abs(pageNum - currentPage) > 2 && pageNum !== 1 && pageNum !== totalPages) {
                                                 if (pageNum === 2 || pageNum === totalPages - 1) return <span key={pageNum} className="text-[#ccc]">...</span>;
                                                 return null;
@@ -199,6 +216,42 @@ const Products = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Filter Drawer */}
+            {showMobileFilters && (
+                <div className="fixed inset-0 z-[200] lg:hidden flex justify-end animate-fade-in">
+                    {/* Backdrop Overlay */}
+                    <div 
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setShowMobileFilters(false)}
+                    />
+                    
+                    {/* Drawer Content */}
+                    <div className="relative w-[85%] max-w-[340px] h-full bg-white shadow-2xl p-6 overflow-y-auto animate-reveal-right flex flex-col">
+                        <div className="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
+                            <h3 className="font-black text-lg uppercase text-slate-800 tracking-tight flex items-center gap-2">
+                                <SlidersHorizontal size={18} className="text-accent" /> Refine Search
+                            </h3>
+                            <button 
+                                onClick={() => setShowMobileFilters(false)}
+                                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                            >
+                                <X size={20} className="text-slate-500" />
+                            </button>
+                        </div>
+                        <div className="flex-grow">
+                            <Sidebar 
+                                categories={categories}
+                                activeCategoryId={categoryId}
+                                onCategoryChange={handleCategoryChange}
+                                onPriceFilter={handlePriceFilter}
+                                initialMin={minPrice}
+                                initialMax={maxPrice}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

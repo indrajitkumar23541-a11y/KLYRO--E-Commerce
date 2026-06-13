@@ -11,6 +11,7 @@ const Fashion = () => {
     const [activeSubId, setActiveSubId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState(null);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,9 +23,10 @@ const Fashion = () => {
         try {
             const response = await API.get('/categories');
             const raw = response.data.categories || [];
-            // Fashion ID is 8 based on research
-            const root = raw.find(c => c.id === 8 || c.name.toLowerCase() === 'fashion');
+            // Dynamically find Fashion root
+            const root = raw.find(c => c.name.toLowerCase() === 'fashion');
             if (root) {
+                setRootCategoryId(root.id);
                 const subCats = raw.filter(c => c.parent_id === root.id);
                 setSubCategories(subCats);
             }
@@ -38,7 +40,7 @@ const Fashion = () => {
         try {
             const params = { limit: 4 };
             if (subId) params.category_id = subId;
-            else params.category_id = 8; 
+            else params.category_id = rootCategoryId; 
             
             const response = await API.get('/products', { params });
             if(response.data.products?.length > 0) {
@@ -60,8 +62,10 @@ const Fashion = () => {
     };
 
     useEffect(() => {
-        fetchProducts(activeSubId);
-    }, [activeSubId]);
+        if (rootCategoryId || activeSubId) {
+            fetchProducts(activeSubId);
+        }
+    }, [activeSubId, rootCategoryId]);
 
     const brands = [
         { 
@@ -98,29 +102,24 @@ const Fashion = () => {
         }
     ];
 
-    const subNavbarItems = ['Fashion', 'Women', 'Men', 'Footwear', 'Watches', 'Jewelry', 'Accessories'];
 
     return (
-        <div className="bg-[#fff9fa] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans">
+        <div className="bg-[#fff9fa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
             
             {/* SUB-NAVBAR CATEGORIES (Sticky and Rose Theme) */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button onClick={() => { setActiveSubId(null); navigate('/fashion'); }} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-pink-600 border-pink-600' : 'text-gray-400 border-transparent hover:text-pink-600'}`}>Fashion</button>
-                    {subNavbarItems.filter(item => item !== 'Fashion').map((item) => (
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
+                            key={cat.id} 
                             onClick={() => {
-                                const found = subCategories.find(c => c.name.toLowerCase().includes(item.toLowerCase()));
-                                if (found) {
-                                    navigate(`/products?category_id=${found.id}`);
-                                } else {
-                                    navigate(`/products?search=${item.toLowerCase()}`);
-                                }
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId && subCategories.find(c => c.id === activeSubId)?.name.toLowerCase().includes(item.toLowerCase()) ? 'text-pink-600 border-pink-600' : 'text-gray-500 border-transparent hover:text-pink-600'}`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-pink-600 border-pink-600' : 'text-gray-500 border-transparent hover:text-pink-600'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
@@ -167,13 +166,13 @@ const Fashion = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=8')} 
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
                                 className="bg-rose-600 hover:bg-rose-700 text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
                                 Shop Collection &rarr;
                             </button>
                             <button 
-                                onClick={() => navigate('/products?category_id=8&sort=popularity')}
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
                                 className="text-[#4c0519] hover:text-rose-600 font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
                             >
                                 New Arrivals <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -188,7 +187,7 @@ const Fashion = () => {
                 <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12">
                     <div className="flex items-center justify-between mb-12 border-b border-gray-200/50 pb-6">
                         <h2 className="text-2xl md:text-3xl font-black text-rose-900 uppercase tracking-tight">Shop by Collection</h2>
-                        <button onClick={() => navigate('/products?category_id=8')} className="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-[#4c0519] border-2 border-rose-200 px-6 py-3 rounded-full hover:bg-[#4c0519] hover:text-white transition-all shadow-sm">
+                        <button onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} className="text-[10px] md:text-[12px] font-black uppercase tracking-widest text-[#4c0519] border-2 border-rose-200 px-6 py-3 rounded-full hover:bg-[#4c0519] hover:text-white transition-all shadow-sm">
                             View All Collections
                         </button>
                     </div>
@@ -264,7 +263,7 @@ const Fashion = () => {
             <section className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 mb-12 md:mb-20 animate-reveal stagger-2">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 md:mb-10 border-b border-pink-100 pb-4 gap-4">
                     <h2 className="text-xl md:text-2xl font-bold text-slate-800">Top Sellers in Fashion</h2>
-                    <button onClick={() => navigate('/products?category_id=8')} className="text-[9px] md:text-[11px] font-semibold uppercase tracking-widest text-pink-600 border border-pink-100 px-6 py-2.5 rounded-full hover:bg-pink-50 transition-colors">
+                    <button onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} className="text-[9px] md:text-[11px] font-semibold uppercase tracking-widest text-pink-600 border border-pink-100 px-6 py-2.5 rounded-full hover:bg-pink-50 transition-colors">
                         View All Products &rsaquo;
                     </button>
                 </div>

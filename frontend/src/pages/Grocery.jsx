@@ -7,6 +7,8 @@ import GroceryV2Data from '../data/GroceryV2Data';
 const Grocery = () => {
     const [products, setProducts] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
+    const [activeSubId, setActiveSubId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,8 +20,10 @@ const Grocery = () => {
         try {
             const response = await API.get('/categories');
             const raw = response.data.categories || [];
+            // Dynamically find Grocery root
             const root = raw.find(c => c.name.toLowerCase().includes('grocery'));
             if (root) {
+                setRootCategoryId(root.id);
                 const subCats = raw.filter(c => c.parent_id === root.id);
                 setSubCategories(subCats);
             }
@@ -27,6 +31,21 @@ const Grocery = () => {
             console.error('Grocery metadata fetch error:', error);
         }
     };
+
+    const fetchProducts = async () => {
+        try {
+            const response = await API.get('/products', { params: { category_id: rootCategoryId, limit: 12 } });
+            setProducts(response.data.products || []);
+        } catch (error) {
+            console.error('Grocery products fetch error:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (rootCategoryId) {
+            fetchProducts();
+        }
+    }, [rootCategoryId]);
 
     const brands = [
         { name: 'Tata Sampann', logo: '/assets/grocery/brands/tata.svg' },
@@ -39,39 +58,41 @@ const Grocery = () => {
         { name: 'Dr. Oetker', logo: '/assets/grocery/brands/dr_oetker.svg' }
     ];
 
-    const subNavbarItems = ['Grocery', 'Fruits', 'Vegetables', 'Dairy', 'Staples', 'Snacks', 'Household'];
 
     return (
-        <div className="bg-[#fffdfa] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fffdfa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans relative">
             {/* Background Texture Overlay */}
             <div className="bg-paper" />
 
-            {/* SUB-NAVBAR CATEGORIES (Sticky Organic Theme) */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Green Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
-                    <button onClick={() => navigate('/grocery')} className="text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 border-[#bc612c] text-[#bc612c] transition-all">Grocery</button>
-                    {subNavbarItems.filter(item => item !== 'Grocery').map((item) => (
+                    <button onClick={() => { navigate('/grocery'); }} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all text-green-700 border-green-700`}>Grocery</button>
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
-                            onClick={() => navigate(`/products?search=${item.toLowerCase()}`)}
-                            className="text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 border-transparent text-gray-500 hover:text-[#bc612c] hover:border-[#bc612c]"
+                            key={cat.id} 
+                            onClick={() => {
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
+                            }}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-green-700 border-green-700' : 'text-gray-500 border-transparent hover:text-green-700'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
             </div>
 
             {/* BREADCRUMBS */}
-            <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 py-2 flex items-center gap-2 text-[10px] md:text-[11px] text-[#bc612c] font-bold uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 py-2 flex items-center gap-2 text-[10px] md:text-[11px] text-green-700 font-bold uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
                 <Link to="/" className="hover:underline">Home</Link>
                 <ChevronRight size={10} strokeWidth={4} className="mt-[1px] flex-shrink-0" />
                 <span>Grocery & Essentials</span>
             </div>
 
             {/* FULL-WIDTH CINEMATIC HERO */}
-            <section className="mb-8 md:mb-16 w-full animate-reveal relative group z-10 px-0 md:px-6 lg:px-0">
-                <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-[#dcc6a6]/20 bg-white">
+            <section className="mb-8 md:mb-16 w-full animate-reveal relative group px-0 md:px-6 lg:px-0">
+                <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-green-50 bg-white">
                     
                     {/* Background Image */}
                     <div 
@@ -80,21 +101,21 @@ const Grocery = () => {
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#fffdfa] via-[#fffdfa]/90 md:via-[#fffdfa]/80 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#f0fdf4] via-[#f0fdf4]/90 md:via-[#f0fdf4]/80 to-transparent z-10" />
 
                     {/* Content Layer */}
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
 
                         <div className="space-y-2 md:space-y-4">
-                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#2d231b] tracking-tight leading-[0.9]">
-                                Fresh <span className="text-[#bc612c]">Organic</span>
+                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#14532d] tracking-tight leading-[0.9]">
+                                Fresh <span className="text-green-600">Harvest</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
-                                Pure Essentials for Your Healthy Lifestyle.
+                                Farm-Fresh Essentials Delivered to Your Door.
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
-                                {GroceryV2Data.hero.bullets.map((bullet, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-[#bc612c]/20 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#bc612c]">
+                                {['100% Organic', 'Farm-to-Table', 'Flash Delivery', 'Quality Guaranteed'].map((bullet, i) => (
+                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-green-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#14532d]">
                                         {bullet}
                                     </div>
                                 ))}
@@ -103,14 +124,14 @@ const Grocery = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=5')} 
-                                className="bg-[#bc612c] hover:bg-[#a05225] text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
+                                className="bg-green-600 hover:bg-green-700 text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
-                                Shop Harvest &rarr;
+                                Shop Fresh &rarr;
                             </button>
                             <button 
-                                onClick={() => navigate('/products?category_id=5&sort=popularity')}
-                                className="text-[#2d231b] hover:text-[#bc612c] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
+                                className="text-[#14532d] hover:text-green-600 font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
                             >
                                 Best Sellers <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>
@@ -206,10 +227,10 @@ const Grocery = () => {
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-                    {GroceryV2Data.exclusiveOffers.map((item) => (
+                    {(products.length > 0 ? products.slice(0, 4) : GroceryV2Data.exclusiveOffers).map((item) => (
                          <div key={item.id} className="bg-white rounded-[24px] md:rounded-[32px] p-4 md:p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col border border-stone-100 h-full group">
                             <div className="h-40 md:h-64 flex items-center justify-center mb-4 md:mb-6 relative z-0 overflow-hidden rounded-2xl bg-[#fdfaf5]/50">
-                                <img src={item.img} alt={item.name} className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700" />
+                                <img src={item.image || item.img} alt={item.name} className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700" />
                                 <button className="absolute top-2 right-2 md:top-4 md:right-4 p-2 bg-white/80 backdrop-blur-md rounded-full text-[#bc612c] hover:text-white hover:bg-[#bc612c] transition-all shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 duration-300">
                                     <ShoppingBag size={16} md={18} />
                                 </button>
@@ -217,8 +238,8 @@ const Grocery = () => {
                             <div className="flex flex-col flex-grow text-center">
                                 <h4 className="font-bold text-slate-700 text-sm md:text-base leading-tight mb-2 md:mb-3 line-clamp-2">{item.name}</h4>
                                 <div className="flex items-center justify-center gap-2 md:gap-3 mb-4 md:mb-6">
-                                    <span className="text-[#bc612c] font-black text-base md:text-xl">₹{item.price}</span>
-                                    <span className="text-[10px] md:text-xs text-slate-300 line-through font-bold italic">₹{item.originalPrice}</span>
+                                    <span className="text-[#bc612c] font-black text-base md:text-xl">₹{item.discount_price || item.price}</span>
+                                    {(item.discount_price || item.originalPrice) && <span className="text-[10px] md:text-xs text-slate-300 line-through font-bold italic">₹{item.price || item.originalPrice}</span>}
                                 </div>
                                 <button className="w-full bg-slate-900 text-white py-2.5 md:py-4 rounded-xl md:rounded-2xl font-black text-[10px] md:text-[12px] uppercase tracking-widest mt-auto shadow-md hover:bg-[#bc612c] transition-all active:scale-95 duration-200">Add to Bag</button>
                             </div>

@@ -21,11 +21,24 @@ const ProductDetail = () => {
     const { addToCart } = useCart();
     const navigate = useNavigate();
     const mainImageRef = useRef(null);
+    const [showStickyBar, setShowStickyBar] = useState(false);
 
     const handleInstantCheckout = async () => {
         await addToCart(product.id, 1);
         navigate('/checkout');
     };
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 450) {
+                setShowStickyBar(true);
+            } else {
+                setShowStickyBar(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -100,6 +113,7 @@ const ProductDetail = () => {
                                 <div 
                                     key={i} 
                                     onMouseEnter={() => setMainImage(img.image_url)}
+                                    onClick={() => setMainImage(img.image_url)}
                                     className={`w-12 h-12 md:w-16 md:h-16 border-2 rounded-lg p-1 cursor-pointer transition-all bg-white flex-shrink-0 flex items-center justify-center ${mainImage === img.image_url ? 'border-[#e77600] shadow-[0_0_8px_rgba(231,118,0,0.4)]' : 'border-gray-200 hover:border-[#e77600]'}`}
                                 >
                                     <img src={img.image_url} alt="" className="max-w-full max-h-full object-contain" />
@@ -279,6 +293,31 @@ const ProductDetail = () => {
                     </div>
                  </div>
             </section>
+
+            {/* Sticky Bottom CTA Bar (Mobile only, sits neatly above BottomNav at bottom-20) */}
+            <div className={`fixed bottom-20 left-0 w-full bg-white/95 backdrop-blur-xl border-t border-slate-100 z-[180] px-4 py-3.5 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.06)] md:hidden transition-all duration-500 ease-in-out ${showStickyBar ? 'translate-y-0 opacity-100' : 'translate-y-[150%] opacity-0 pointer-events-none'}`}>
+                <div className="flex items-center gap-3 max-w-[55%]">
+                    <img src={mainImage} alt="" className="w-10 h-10 object-contain rounded-md bg-slate-50 border border-slate-100 flex-shrink-0" />
+                    <div className="min-w-0">
+                        <h4 className="text-[11px] font-bold text-slate-800 truncate leading-none mb-1">{product.name}</h4>
+                        <p className="text-[12px] font-black text-rose-600 leading-none">₹{Math.floor(product.price).toLocaleString()}</p>
+                    </div>
+                </div>
+                <div className="flex gap-2">
+                    <button 
+                        onClick={() => addToCart(product.id, 1)}
+                        className="bg-[#ffd814] hover:bg-[#f7ca00] text-[#111] px-4 py-2.5 rounded-xl font-black text-[9px] transition-all border border-[#fcd200] shadow-sm flex items-center justify-center gap-1.5 uppercase tracking-wider active:scale-95"
+                    >
+                        <ShoppingCart size={11} strokeWidth={2.5} /> Add
+                    </button>
+                    <button 
+                        onClick={handleInstantCheckout}
+                        className="bg-[#ffa41c] hover:bg-[#fa8900] text-[#111] px-4 py-2.5 rounded-xl font-black text-[9px] transition-all border border-[#ff8f00] shadow-sm flex items-center justify-center gap-1.5 uppercase tracking-wider active:scale-95"
+                    >
+                        <Zap size={11} strokeWidth={2.5} /> Buy
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

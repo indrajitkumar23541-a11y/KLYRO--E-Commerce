@@ -32,6 +32,7 @@ const Electronics = () => {
     const [activeTab, setActiveTab] = useState('All');
     const [loading, setLoading] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState(null);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,8 +44,10 @@ const Electronics = () => {
         try {
             const response = await API.get('/categories');
             const raw = response.data.categories || [];
+            // Dynamically find Electronics root
             const electronicsRoot = raw.find(c => c.name.toLowerCase() === 'electronics');
             if (electronicsRoot) {
+                setRootCategoryId(electronicsRoot.id);
                 const subCats = raw.filter(c => c.parent_id === electronicsRoot.id);
                 setSubCategories(subCats);
             }
@@ -58,7 +61,7 @@ const Electronics = () => {
         try {
             const params = { limit: 8 };
             if (subId) params.category_id = subId;
-            else params.category_id = 4; 
+            else params.category_id = rootCategoryId;
             
             const response = await API.get('/products', { params });
             setProducts(response.data.products || []);
@@ -70,8 +73,10 @@ const Electronics = () => {
     };
 
     useEffect(() => {
-        fetchProducts(activeSubId);
-    }, [activeSubId]);
+        if (rootCategoryId || activeSubId) {
+            fetchProducts(activeSubId);
+        }
+    }, [activeSubId, rootCategoryId]);
 
     const brands = [
         { name: 'Noise', logo: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30"><text x="0" y="24" font-family="%27Arial Black%27, sans-serif" font-weight="900" font-size="28" fill="%23000">NOISE</text></svg>' },
@@ -89,29 +94,24 @@ const Electronics = () => {
         { name: 'Huawei', logo: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><text x="0" y="24" font-family="%27Arial Black%27, sans-serif" font-weight="900" font-size="22" fill="%23CF0A2C">HUAWEI</text></svg>' },
         { name: 'Fire-Boltt', logo: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 30"><text x="0" y="22" font-family="%27Arial Black%27, sans-serif" font-weight="900" font-size="16" fill="%23FF5E14" font-style="italic">FIRE-BOLTT</text></svg>' }
     ];
-    const subNavbarItems = ['Electronics', 'Mobiles', 'Laptops', 'Tablets', 'Smart Gadgets', 'Accessories', 'Audio'];
 
     return (
-        <div className="bg-[#f0f9ff] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans">
+        <div className="bg-[#f8f9fa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
             
-            {/* SUB-NAVBAR CATEGORIES (Sticky Tech Style) */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Blue Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button onClick={() => { setActiveSubId(null); navigate('/electronics'); }} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-transparent hover:text-blue-600'}`}>Electronics</button>
-                    {subNavbarItems.filter(item => item !== 'Electronics').map((item) => (
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
+                            key={cat.id} 
                             onClick={() => {
-                                const found = subCategories.find(c => c.name.toLowerCase().includes(item.toLowerCase()));
-                                if (found) {
-                                    navigate(`/products?category_id=${found.id}`);
-                                } else {
-                                    navigate(`/products?search=${item.toLowerCase()}`);
-                                }
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 text-gray-500 border-transparent hover:text-blue-600`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-blue-600'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
@@ -142,10 +142,10 @@ const Electronics = () => {
 
                         <div className="space-y-2 md:space-y-4">
                             <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#1e3a8a] tracking-tight leading-[0.9]">
-                                Tech <span className="text-cyan-500">Innovation</span>
+                                Tech <span className="text-cyan-500">Pulse</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
-                                The Latest Gadgets at Your Fingertips.
+                                Innovation that Empowers Your Future.
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
                                 {['Premium Gear', 'Innovation', 'Next-Gen Tech', 'Reliable Support'].map((bullet, i) => (
@@ -158,14 +158,14 @@ const Electronics = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=4')} 
-                                className="bg-[#fbbf24] hover:bg-[#f59e0b] text-[#78350f] px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
                                 Shop All Tech &rarr;
                             </button>
                             <button 
-                                onClick={() => navigate('/products?category_id=4&sort=popularity')}
-                                className="text-[#1e3a8a] hover:text-[#fbbf24] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
+                                className="text-[#1e3a8a] hover:text-blue-600 font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
                             >
                                 Bestsellers <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>

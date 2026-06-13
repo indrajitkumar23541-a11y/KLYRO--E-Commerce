@@ -65,55 +65,55 @@ const Cart = () => {
 
                             <div className="space-y-8 divide-y divide-gray-100">
                                 {cartItems.map((item) => (
-                                    <div key={item.product?.id} className="pt-8 flex flex-col md:flex-row gap-6 group">
+                                    <div key={item.product?.id} className="pt-8 flex flex-row gap-4 md:gap-6 group">
                                         {/* Product Image */}
-                                        <div className="w-48 h-48 bg-white flex-shrink-0 flex items-center justify-center p-2 relative group-hover:scale-105 transition-transform duration-500">
+                                        <div className="w-20 h-20 xs:w-24 xs:h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 bg-white flex-shrink-0 flex items-center justify-center p-1 sm:p-2 relative group-hover:scale-105 transition-transform duration-500 border border-gray-100 rounded-lg">
                                             <img src={item.product?.image} alt={item.product?.name} className="max-w-full max-h-full object-contain" />
                                         </div>
 
                                         {/* Product Info */}
-                                        <div className="flex-grow space-y-2">
-                                            <div className="flex justify-between items-start gap-4">
-                                                <Link to={`/products/${item.product?.id}`} className="text-lg font-medium text-[#007185] hover:text-[#c45500] hover:underline line-clamp-2 leading-snug">
+                                        <div className="flex-grow min-w-0 space-y-1.5 sm:space-y-2">
+                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-1 sm:gap-4">
+                                                <Link to={`/products/${item.product?.id}`} className="text-xs sm:text-sm md:text-lg font-medium text-[#007185] hover:text-[#c45500] hover:underline line-clamp-2 leading-snug">
                                                     {item.product?.name}
                                                 </Link>
-                                                <span className="text-xl font-bold text-[#111] whitespace-nowrap">₹{parseFloat(item.product?.price).toLocaleString()}</span>
+                                                <span className="text-sm sm:text-lg md:text-xl font-bold text-[#111] whitespace-nowrap">₹{parseFloat(item.product?.price).toLocaleString()}</span>
                                             </div>
                                             
-                                            <div className="text-xs space-y-1">
+                                            <div className="text-[10px] sm:text-xs space-y-0.5 sm:space-y-1">
                                                 <p className="text-[#007600] font-bold">In Stock</p>
                                                 <p className="text-gray-500">Eligible for FREE Shipping</p>
                                                 <div className="flex items-center gap-2">
-                                                    <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                                                    <span className="text-gray-600">This is a gift <button className="text-[#007185] hover:underline">Learn more</button></span>
+                                                    <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-3 h-3 sm:w-4 sm:h-4" />
+                                                    <span className="text-gray-600 text-[10px] sm:text-xs">This is a gift <button className="text-[#007185] hover:underline">Learn more</button></span>
                                                 </div>
                                             </div>
 
                                             {/* Quantity & Actions */}
-                                            <div className="flex flex-wrap items-center gap-4 pt-4">
+                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 sm:pt-4">
                                                 <div className="flex items-center bg-[#f0f2f2] border border-gray-300 rounded-lg overflow-hidden shadow-sm">
                                                     <button 
                                                         onClick={() => updateQuantity?.(item.product?.id, item.quantity - 1)}
-                                                        className="px-3 py-1.5 hover:bg-gray-200 transition-colors"
+                                                        className="px-2 py-1 hover:bg-gray-200 transition-colors"
                                                     >
-                                                        <Minus size={14} />
+                                                        <Minus size={12} />
                                                     </button>
-                                                    <span className="px-4 py-1.5 text-sm font-bold bg-white border-x border-gray-300 min-w-[40px] text-center">
+                                                    <span className="px-3 py-1 text-xs font-bold bg-white border-x border-gray-300 min-w-[32px] text-center">
                                                         {item.quantity}
                                                     </span>
                                                     <button 
                                                         onClick={() => updateQuantity?.(item.product?.id, item.quantity + 1)}
-                                                        className="px-3 py-1.5 hover:bg-gray-200 transition-colors"
+                                                        className="px-2 py-1 hover:bg-gray-200 transition-colors"
                                                     >
-                                                        <Plus size={14} />
+                                                        <Plus size={12} />
                                                     </button>
                                                 </div>
-                                                <span className="h-4 w-[1px] bg-gray-200"></span>
+                                                <span className="hidden sm:inline-block h-4 w-[1px] bg-gray-200"></span>
                                                 <button onClick={() => removeFromCart(item.product?.id)} className="text-xs text-[#007185] hover:underline">Delete</button>
-                                                <span className="h-4 w-[1px] bg-gray-200"></span>
+                                                <span className="hidden sm:inline-block h-4 w-[1px] bg-gray-200"></span>
                                                 <button className="text-xs text-[#007185] hover:underline">Save for later</button>
-                                                <span className="h-4 w-[1px] bg-gray-200"></span>
-                                                <button className="text-xs text-[#007185] hover:underline">See more like this</button>
+                                                <span className="hidden md:inline-block h-4 w-[1px] bg-gray-200"></span>
+                                                <button className="hidden md:inline-block text-xs text-[#007185] hover:underline">See more like this</button>
                                             </div>
                                         </div>
                                     </div>

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid meet">
+  <text x="150" y="80" font-family="'Times New Roman', serif" font-weight="900" font-size="64" text-anchor="middle" letter-spacing="4" fill="#1a1a1a">DAAWAT</text>
+  <path fill="#888" d="M140 25h20l10 10v10h-40v-10l10-10z" opacity="0.4"/>
+</svg>

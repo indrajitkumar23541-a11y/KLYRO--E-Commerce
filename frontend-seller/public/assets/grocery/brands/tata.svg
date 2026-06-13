@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid meet">
+  <text x="150" y="55" font-family="'Arial Black', sans-serif" font-weight="900" font-size="52" text-anchor="middle" letter-spacing="4" fill="#1a1a1a">TATA</text>
+  <text x="150" y="95" font-family="Arial, sans-serif" font-weight="bold" font-size="28" text-anchor="middle" letter-spacing="8" fill="#444">SAMPANN</text>
+  <path fill="#666" d="M260 40c-10-5-25-5-35 0s-5 15 0 25 10 15 20 15-15 5-30 0-15-5-30-10 5-5 10-15 10-25 0-10-10-15-20-15z" opacity="0.3"/>
+</svg>

@@ -42,7 +42,7 @@ app.use(createProxyMiddleware({
 
 // 🔔 Notification Service
 app.use(createProxyMiddleware({
-    target: 'http://localhost:5006',
+    target: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:5006',
     changeOrigin: true,
     pathFilter: (path) => path.startsWith('/api/notifications')
 }));

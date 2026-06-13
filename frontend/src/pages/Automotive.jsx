@@ -31,6 +31,7 @@ const Automotive = () => {
     const [activeSubId, setActiveSubId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState(null);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -42,8 +43,10 @@ const Automotive = () => {
         try {
             const response = await API.get('/categories');
             const raw = response.data.categories || [];
-            const autoRoot = raw.find(c => c.id === 46 || c.name.toLowerCase() === 'automotive');
+            // Dynamically find Automotive root
+            const autoRoot = raw.find(c => c.name.toLowerCase() === 'automotive');
             if (autoRoot) {
+                setRootCategoryId(autoRoot.id);
                 const subCats = raw.filter(c => c.parent_id === autoRoot.id);
                 setSubCategories(subCats);
             }
@@ -57,7 +60,7 @@ const Automotive = () => {
         try {
             const params = { limit: 4 };
             if (subId) params.category_id = subId;
-            else params.category_id = 46; 
+            else params.category_id = rootCategoryId; 
             
             const response = await API.get('/products', { params });
             if(response.data.products?.length > 0) {
@@ -78,8 +81,10 @@ const Automotive = () => {
     };
 
     useEffect(() => {
-        fetchProducts(activeSubId);
-    }, [activeSubId]);
+        if (rootCategoryId || activeSubId) {
+            fetchProducts(activeSubId);
+        }
+    }, [activeSubId, rootCategoryId]);
 
     const brands = [
         { name: 'Michelin', logo: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><text x="0" y="30" font-family="%27Arial Black%27, sans-serif" font-weight="900" font-size="20" fill="%231e3a8a" font-style="italic" letter-spacing="-1">MICHELIN</text></svg>' },
@@ -96,49 +101,54 @@ const Automotive = () => {
         { name: 'Castrol', logo: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40"><text x="0" y="30" font-family="%27Arial Black%27, sans-serif" font-weight="900" font-size="22" fill="%2301804b" letter-spacing="0">Castrol</text></svg>' }
     ];
 
-    const subNavbarItems = ['Automotive', 'Car Electronics', 'Car Accessories', 'Bike Gear', 'Performance Spares'];
 
     return (
-        <div className="bg-[#fcfdfd] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans">
+        <div className="bg-[#fcfdfd] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
             
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Blue Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button onClick={() => { setActiveSubId(null); navigate('/automotive'); }} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-blue-600 border-blue-600' : 'text-gray-400 border-transparent hover:text-blue-600'}`}>Automotive</button>
-                    {subNavbarItems.filter(item => item !== 'Automotive').map((item) => (
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
+                            key={cat.id} 
                             onClick={() => {
-                                const found = subCategories.find(c => c.name.toLowerCase().includes(item.toLowerCase()));
-                                if (found) {
-                                    navigate(`/products?category_id=${found.id}`);
-                                } else {
-                                    navigate(`/products?search=${item.toLowerCase()}`);
-                                }
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 text-gray-500 border-transparent hover:text-blue-600`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-blue-600 border-blue-600' : 'text-gray-500 border-transparent hover:text-blue-600'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
             </div>
 
+            {/* BREADCRUMBS */}
             <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 py-2 flex items-center gap-2 text-[10px] md:text-[11px] text-blue-600 font-bold uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
                 <Link to="/" className="hover:underline">Home</Link>
                 <ChevronRight size={10} strokeWidth={4} className="mt-[1px] flex-shrink-0" />
                 <span>Automotive</span>
             </div>
 
+            {/* FULL-WIDTH CINEMATIC HERO */}
             <section className="mb-8 md:mb-16 w-full animate-reveal relative group px-0 md:px-6 lg:px-0">
                 <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-blue-50 bg-white">
+                    
+                    {/* Background Image */}
                     <div 
                         className="absolute inset-0 w-full bg-cover bg-center transition-transform duration-[6000ms] group-hover:scale-110 ease-out"
                         style={{ backgroundImage: `url(/assets/auto_hero_v2.png)` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#f8fafc] via-[#f8fafc]/90 md:via-[#f8fafc]/80 to-transparent z-10" />
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#f0f9ff] via-[#f0f9ff]/90 md:via-[#f0f9ff]/80 to-transparent z-10" />
+
+                    {/* Content Layer */}
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
+
                         <div className="space-y-2 md:space-y-4">
-                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#1e1b4b] tracking-tight leading-[0.9]">
+                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#0c4a6e] tracking-tight leading-[0.9]">
                                 Auto <span className="text-blue-600">Elite</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
@@ -146,22 +156,23 @@ const Automotive = () => {
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
                                 {['Performance Tuning', 'Premium Detailing', 'Original Parts', 'Expert Consultation'].map((bullet, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-blue-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#1e1b4b]">
+                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-blue-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#0c4a6e]">
                                         {bullet}
                                     </div>
                                 ))}
                             </div>
                         </div>
+
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=46')} 
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
                                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
-                                Shop All Parts &rarr;
+                                Shop Performance &rarr;
                             </button>
                             <button 
                                 onClick={() => document.getElementById('bestsellers').scrollIntoView({behavior:'smooth'})}
-                                className="text-[#1e1b4b] hover:text-blue-600 font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                                className="text-[#0c4a6e] hover:text-blue-600 font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
                             >
                                 Best Sellers <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>

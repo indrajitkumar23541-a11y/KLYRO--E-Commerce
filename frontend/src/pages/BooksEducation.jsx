@@ -29,7 +29,8 @@ const BooksEducation = () => {
         try {
             const catResponse = await API.get('/categories');
             const allCats = catResponse.data.categories || [];
-            const root = allCats.find(c => c.name === "Books & Education");
+            // Dynamically find Books & Education root
+            const root = allCats.find(c => c.name.toLowerCase().includes('books'));
             if (root) {
                 setRootCategoryId(root.id);
                 setSubCategories(allCats.filter(c => c.parent_id === root.id));
@@ -67,25 +68,20 @@ const BooksEducation = () => {
     }, [rootCategoryId, activeSubId]);
 
     return (
-        <div className="bg-[#fcfdfd] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition">
+        <div className="bg-[#fcfdfd] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition">
             
-            {/* SUB-NAVBAR CATEGORIES (Sticky Academic Theme) */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Orange Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
-                    <button 
-                        onClick={() => { setActiveSubId(null); navigate('/books-education'); }} 
-                        className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-[#F37021] border-[#F37021]' : 'text-gray-400 border-transparent hover:text-[#F37021]'}`}
-                    >
-                        Books & Education
-                    </button>
-                    {subCategories.map(cat => (
+                    <button onClick={() => { setActiveSubId(null); navigate('/books-education'); }} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all ${activeSubId === null ? 'text-[#F37021] border-[#F37021]' : 'text-gray-400 border-transparent hover:text-[#F37021]'}`}>Books & Education</button>
+                    {subCategories.map((cat) => (
                         <button 
                             key={cat.id} 
                             onClick={() => {
                                 setActiveSubId(cat.id);
                                 navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-[#F37021] border-[#F37021]' : 'text-gray-500 border-transparent hover:text-[#F37021] hover:border-[#F37021]'}`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-[#F37021] border-[#F37021]' : 'text-gray-500 border-transparent hover:text-[#F37021]'}`}
                         >
                             {cat.name}
                         </button>
@@ -111,21 +107,21 @@ const BooksEducation = () => {
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#FFF8F0] via-[#FFF8F0]/90 md:via-[#FFF8F0]/80 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#fff7ed] via-[#fff7ed]/90 md:via-[#fff7ed]/80 to-transparent z-10" />
 
                     {/* Content Layer */}
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
 
                         <div className="space-y-2 md:space-y-4">
-                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#4a2c2a] tracking-tight leading-[0.9]">
-                                Books <span className="text-[#F37021]">Education</span>
+                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#431407] tracking-tight leading-[0.9]">
+                                Knowledge <span className="text-[#F37021]">Hub</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
-                                Unlock Knowledge. Build Your Future.
+                                Unlock the Extraordinary World of Wisdom.
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
                                 {['Academic Excellence', 'Novel Bestsellers', 'Premium Stationery', 'Global Publishers'].map((bullet, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-orange-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#4a2c2a]">
+                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-orange-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#431407]">
                                         {bullet}
                                     </div>
                                 ))}
@@ -134,14 +130,14 @@ const BooksEducation = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=14')} 
-                                className="bg-[#F37021] hover:bg-[#e05d1a] text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
+                                className="bg-orange-600 hover:bg-orange-700 text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
                                 Shop Wisdom &rarr;
                             </button>
                             <button 
-                                onClick={() => navigate('/products?category_id=14&sort=popularity')}
-                                className="text-[#4a2c2a] hover:text-[#F37021] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
+                                className="text-[#431407] hover:text-[#F37021] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
                             >
                                 New Arrivals <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>

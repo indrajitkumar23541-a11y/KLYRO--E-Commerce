@@ -5,7 +5,10 @@
   "scripts": {
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
+    "seller": "cd frontend-seller && npm run dev",
+    "admin": "cd frontend-admin && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "dev:all": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run seller\" \"npm run admin\"",
     "start:gateway": "cd services/api-gateway && npm run dev",
     "start:identity": "cd services/identity-service && npm run dev",
     "start:product": "cd services/product-service && npm run dev",

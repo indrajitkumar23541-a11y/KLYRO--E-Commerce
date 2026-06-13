@@ -6,35 +6,69 @@ import KidsBabyData from '../data/KidsBabyData';
 const KidsBaby = () => {
     const navigate = useNavigate();
     const [selectedGuide, setSelectedGuide] = useState(null);
+    const [products, setProducts] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         document.title = "KLYRO | Kids & Baby";
         window.scrollTo(0, 0);
+        fetchMetadata();
     }, []);
 
-    const subNavbarItems = ['Kids & Baby', 'Toys', 'Baby Care', 'Clothing', 'Footwear', 'Learning'];
+    const fetchMetadata = async () => {
+        try {
+            const response = await API.get('/categories');
+            const raw = response.data.categories || [];
+            // Dynamically find Kids & Baby root
+            const root = raw.find(c => c.name.toLowerCase().includes('kids'));
+            if (root) {
+                setRootCategoryId(root.id);
+                const subCats = raw.filter(c => c.parent_id === root.id);
+                setSubCategories(subCats);
+            }
+        } catch (error) {
+            console.error('Kids metadata fetch error:', error);
+        }
+    };
+
+    const fetchProducts = async () => {
+        setLoading(true);
+        try {
+            const response = await API.get('/products', { params: { category_id: rootCategoryId, limit: 4 } });
+            setProducts(response.data.products || []);
+        } catch (error) {
+            console.error('Kids products fetch error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (rootCategoryId) {
+            fetchProducts();
+        }
+    }, [rootCategoryId]);
+
 
     return (
-        <div className="bg-[#fdfaf5] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans">
+        <div className="bg-[#fdfaf5] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
             
-            {/* SUB-NAVBAR CATEGORIES */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Orange Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button onClick={() => navigate('/kids-baby')} className={`text-[10px] md:text-[12px] font-black uppercase h-full border-b-2 transition-all text-[#bc612c] border-[#bc612c]`}>Kids & Baby</button>
-                    {subNavbarItems.filter(item => item !== 'Kids & Baby').map((item) => (
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
+                            key={cat.id} 
                             onClick={() => {
-                                const found = KidsBabyData.categories.find(c => c.name.toLowerCase().includes(item.toLowerCase()));
-                                if (found) {
-                                    navigate(`/products?category_id=${found.id}`);
-                                } else {
-                                    navigate(`/products?search=${item.toLowerCase()}`);
-                                }
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 text-gray-500 border-transparent hover:text-[#bc612c]`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-[#bc612c] border-[#bc612c]' : 'text-gray-500 border-transparent hover:text-[#bc612c]'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
@@ -47,31 +81,32 @@ const KidsBaby = () => {
                 <span>Kids & Baby</span>
             </div>
 
-            {/* CINEMATIC HERO */}
+            {/* FULL-WIDTH CINEMATIC HERO */}
             <section className="mb-8 md:mb-16 w-full animate-reveal relative group px-0 md:px-6 lg:px-0">
-                <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-white bg-white">
+                <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-orange-50 bg-white">
                     
                     {/* Background Image */}
                     <div 
                         className="absolute inset-0 w-full bg-cover bg-center transition-transform duration-[6000ms] group-hover:scale-110 ease-out"
-                        style={{ backgroundImage: `url(${KidsBabyData.hero.image})` }}
+                        style={{ backgroundImage: `url(/assets/kids_hero_v2.png)` }}
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#fdfaf5] via-[#fdfaf5]/90 md:via-[#fdfaf5]/80 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#fff7ed] via-[#fff7ed]/90 md:via-[#fff7ed]/80 to-transparent z-10" />
 
                     {/* Content Layer */}
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
-                        <div className="space-y-2 md:space-y-4 text-left">
-                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#2d231b] tracking-tight leading-[0.9]">
-                                <span className="text-[#bc612c]">Kids</span> & Baby
+
+                        <div className="space-y-2 md:space-y-4">
+                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#431407] tracking-tight leading-[0.9]">
+                                Little <span className="text-[#bc612c]">Wonders</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
-                                {KidsBabyData.hero.subtitle}
+                                Pure Joy for Your Little Explorers.
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
-                                {KidsBabyData.hero.bullets.map((bullet, i) => (
-                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-[#bc612c]/20 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#bc612c]">
+                                {['Safe & Tested', 'Educational Play', 'Premium Quality', 'Happy Parenting'].map((bullet, i) => (
+                                    <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-orange-100 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#431407]">
                                         {bullet}
                                     </div>
                                 ))}
@@ -80,12 +115,15 @@ const KidsBaby = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=42')} 
-                                className="bg-[#bc612c] hover:bg-[#9e5d3c] text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
+                                className="bg-[#bc612c] hover:bg-[#a0522d] text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
-                                Shop Now &rarr;
+                                Shop Little Wonders &rarr;
                             </button>
-                            <button className="text-[#2d231b] hover:text-[#bc612c] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn">
+                            <button 
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
+                                className="text-[#431407] hover:text-[#bc612c] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                            >
                                 Explore Deals <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>
                         </div>

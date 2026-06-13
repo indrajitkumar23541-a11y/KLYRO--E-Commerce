@@ -68,9 +68,12 @@ services:
       - REDIS_HOST=redis
       - KAFKA_BROKERS=kafka:29092
     depends_on:
-      - mysql
-      - redis
-      - kafka
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      kafka:
+        condition: service_started
 
   api-gateway:
     build:
@@ -86,6 +89,7 @@ services:
       - MONOLITH_SERVICE_URL=http://backend:5001
       - SEARCH_SERVICE_URL=http://search-service:5005
       - AI_SERVICE_URL=http://ai-service:5007
+      - NOTIFICATION_SERVICE_URL=http://notification-service:5006
     depends_on:
       - identity-service
       - product-service
@@ -93,6 +97,7 @@ services:
       - backend
       - search-service
       - ai-service
+      - notification-service
 
   identity-service:
     build:
@@ -121,7 +126,8 @@ services:
       - DB_NAME=klyro_db
       - KAFKA_BROKERS=kafka:29092
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   order-service:
     build:
@@ -137,6 +143,11 @@ services:
       - KAFKA_BROKERS=kafka:29092
     depends_on:
       - mysql
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5004/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   notification-service:
     build:
@@ -151,8 +162,15 @@ services:
       - DB_NAME=klyro_db
       - KAFKA_BROKERS=kafka:29092
     depends_on:
-      - mysql
-      - kafka
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5006/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   search-service:
     build:

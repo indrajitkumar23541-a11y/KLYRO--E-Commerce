@@ -11,9 +11,6 @@ const Home = () => {
     const [activeCategoryId, setActiveCategoryId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Categories mapping from DB (Source of Truth)
-
-
     const slides = [
         {
             image: '/assets/digital_lifestyle_v3.webp',
@@ -29,7 +26,6 @@ const Home = () => {
             accent: 'bg-accent-color',
             id: 2
         },
-
         {
             image: '/assets/grocery_hero.webp',
             subtitle: 'Fresh & Organic',
@@ -121,9 +117,12 @@ const Home = () => {
                             </h1>
                             <Link 
                                 to={
+                                    slide.title.toLowerCase().includes('digital') || slide.title.toLowerCase().includes('electronics') ? '/electronics' : 
+                                    slide.title.toLowerCase().includes('fashion') ? '/fashion' : 
                                     slide.title.toLowerCase().includes('beauty') ? '/beauty-health' : 
                                     slide.title.toLowerCase().includes('books') ? '/books-education' : 
                                     slide.title.toLowerCase().includes('fitness') ? '/sports-fitness' : 
+                                    slide.title.toLowerCase().includes('grocery') ? '/grocery' :
                                     `/products?category_id=${slide.id}`
                                 } 
                                 className="inline-flex items-center gap-2 md:gap-4 bg-white text-text-color px-6 md:px-10 py-3 md:py-4 rounded-full font-bold uppercase tracking-widest text-[11px] md:text-sm hover:bg-accent-color hover:text-white transition-all shadow-xl"
@@ -188,13 +187,7 @@ const Home = () => {
                     {homeCategories.map((cat) => (
                         <Link 
                             key={cat.id} 
-                            to={
-                                cat.name.toLowerCase().includes('beauty') ? '/beauty-health' : 
-                                cat.name.toLowerCase().includes('books') ? '/books-education' : 
-                                cat.name.toLowerCase().includes('sports') ? '/sports-fitness' : 
-                                cat.name.toLowerCase().includes('auto') ? '/automotive' : 
-                                `/products?category_id=${cat.id}`
-                            }
+                            to={cat.path}
                             className="bg-[var(--card-bg)] rounded-xl p-4 md:p-8 flex flex-col items-center justify-between shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[var(--card-border)] group h-[200px] md:h-[260px]"
                         >
                             <div className="w-full flex-grow flex items-center justify-center p-2 md:p-4 overflow-hidden">
@@ -265,4 +258,3 @@ const Home = () => {
 };
 
 export default Home;
-

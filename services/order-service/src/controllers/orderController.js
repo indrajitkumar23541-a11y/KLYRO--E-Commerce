@@ -127,6 +127,8 @@ const getMyOrders = async (req, res) => {
                     user_id: row.user_id,
                     total_price: row.total_price,
                     status: row.status,
+                    return_status: row.return_status,
+                    return_reason: row.return_reason,
                     shipping_address: row.shipping_address,
                     payment_method: row.payment_method,
                     created_at: row.created_at,
@@ -213,6 +215,27 @@ const requestOrderReturn = async (req, res) => {
         );
 
         res.json({ success: true, message: 'Return request submitted successfully' });
+
+        // Publish ReturnRequested Event
+        try {
+            await producer.send({
+                topic: 'klyro.orders.return_requested',
+                messages: [
+                    { 
+                        key: String(orderId), 
+                        value: JSON.stringify({
+                            orderId,
+                            userId,
+                            reason,
+                            timestamp: new Date().toISOString()
+                        }) 
+                    }
+                ],
+            });
+            console.log(`🚀 Published ReturnRequested event for Order ID: ${orderId}`);
+        } catch (kafkaError) {
+            console.error('❌ Failed to publish return event:', kafkaError);
+        }
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

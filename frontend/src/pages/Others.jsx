@@ -47,32 +47,44 @@ const Others = () => {
     const [loading, setLoading] = useState(true);
     const [activeSubId, setActiveSubId] = useState(null);
     const [subCategories, setSubCategories] = useState([]);
+    const [rootCategoryId, setRootCategoryId] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "KLYRO | Others Marketplace";
         fetchMetadata();
-        fetchProducts();
     }, []);
+
+    useEffect(() => {
+        if (rootCategoryId || activeSubId) {
+            fetchProducts(activeSubId);
+        }
+    }, [rootCategoryId, activeSubId]);
 
     const fetchMetadata = async () => {
         try {
             const response = await API.get('/categories');
-            const tree = response.data.categories || [];
-            // category 45 is "Others"
-            const subCats = tree.filter(c => c.parent_id === 45);
-            setSubCategories(subCats);
+            const raw = response.data.categories || [];
+            // Dynamically find Others root
+            const root = raw.find(c => c.name.toLowerCase() === 'others');
+            if (root) {
+                setRootCategoryId(root.id);
+                setSubCategories(raw.filter(c => c.parent_id === root.id));
+            }
         } catch (error) {
-            console.error('Metadata fetch error:', error);
+            console.error('Error fetching others metadata:', error);
         }
     };
 
-    const subNavbarItems = ['Others', 'Stationery', 'Pet Supplies', 'Hobbies', 'Travel', 'Office', 'Hardware'];
 
-    const fetchProducts = async () => {
+    const fetchProducts = async (subId) => {
+        setLoading(true);
         try {
-            // Fetch products from categories under "Others" (ID 45)
-            const response = await API.get('/products', { params: { category_id: 45, limit: 12 } });
+            const params = { limit: 12 };
+            if (subId) params.category_id = subId;
+            else if (rootCategoryId) params.category_id = rootCategoryId;
+
+            const response = await API.get('/products', { params });
             setProducts(response.data.products || []);
         } catch (error) {
             console.error('Error fetching others products:', error);
@@ -99,12 +111,12 @@ const Others = () => {
     };
 
     return (
-        <div className="bg-[#fdfaf5] min-h-screen pt-[100px] md:pt-[112px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fdfaf5] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans relative">
             {/* Paper Texture Overlay */}
 
 
-            {/* SUB-NAVBAR CATEGORIES */}
-            <div className="bg-white border-b sticky top-[56px] md:top-[64px] lg:top-[112px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
+            {/* SUB-NAVBAR CATEGORIES (Sticky and Sage Theme) */}
+            <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
                 <div className="max-w-[1440px] mx-auto flex items-center h-12 px-4 md:px-6 gap-6 md:gap-8">
                     <button 
                         onClick={() => { setActiveSubId(null); navigate('/others'); }} 
@@ -112,20 +124,16 @@ const Others = () => {
                     >
                         Others
                     </button>
-                    {subNavbarItems.filter(item => item !== 'Others').map((item) => (
+                    {subCategories.map((cat) => (
                         <button 
-                            key={item} 
+                            key={cat.id} 
                             onClick={() => {
-                                const found = subCategories.find(c => c.name.toLowerCase().includes(item.toLowerCase()));
-                                if (found) {
-                                    navigate(`/products?category_id=${found.id}`);
-                                } else {
-                                    navigate(`/products?search=${item.toLowerCase()}`);
-                                }
+                                setActiveSubId(cat.id);
+                                navigate(`/products?category_id=${cat.id}`);
                             }}
-                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 text-gray-500 border-transparent hover:text-[#5D6B60]`}
+                            className={`text-[9px] md:text-[11px] font-bold uppercase transition-all h-full border-b-2 ${activeSubId === cat.id ? 'text-[#5D6B60] border-[#5D6B60]' : 'text-gray-500 border-transparent hover:text-[#5D6B60]'}`}
                         >
-                            {item}
+                            {cat.name}
                         </button>
                     ))}
                 </div>
@@ -138,30 +146,31 @@ const Others = () => {
                 <span>Others</span>
             </div>
 
-            {/* CINEMATIC HERO */}
+            {/* FULL-WIDTH CINEMATIC HERO */}
             <section className="mb-12 md:mb-16 w-full animate-reveal relative group px-0 md:px-6 lg:px-0">
                 <div className="relative h-[40vh] md:h-[50vh] min-h-[350px] md:min-h-[450px] w-full overflow-hidden shadow-sm md:rounded-3xl lg:rounded-none border-b border-white bg-white">
                     
                     {/* Background Image */}
                     <div 
                         className="absolute inset-0 w-full bg-cover bg-center transition-transform duration-[6000ms] group-hover:scale-110 ease-out"
-                        style={{ backgroundImage: `url(${OthersData.hero.image})` }}
+                        style={{ backgroundImage: `url(/assets/others_hero_v2.png)` }}
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#fdfaf5] via-[#fdfaf5]/90 md:via-[#fdfaf5]/80 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#fcfcfb] via-[#fcfcfb]/90 md:via-[#fcfcfb]/80 to-transparent z-10" />
 
                     {/* Content Layer */}
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
-                        <div className="space-y-2 md:space-y-4 text-left">
+
+                        <div className="space-y-2 md:space-y-4">
                             <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#2d231b] tracking-tight leading-[0.9]">
-                                <span className="text-[#5D6B60]">Curated</span> & Essentials
+                                Curated <span className="text-[#5D6B60]">Choice</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
-                                {OthersData.hero.subtitle}
+                                Unique Finds for Your Everyday Lifestyle.
                             </p>
                             <div className="hidden sm:flex flex-wrap gap-2 md:gap-4 pt-2">
-                                {OthersData.hero.bullets.map((bullet, i) => (
+                                {['Global Sourcing', 'Unique Inventory', 'Verified Sellers', 'Fast Fulfillment'].map((bullet, i) => (
                                     <div key={i} className="bg-white/80 backdrop-blur-md px-3 md:px-4 py-1.5 rounded-full border border-[#5D6B60]/20 text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#5D6B60]">
                                         {bullet}
                                     </div>
@@ -171,12 +180,15 @@ const Others = () => {
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-10 pt-2 md:pt-4">
                             <button 
-                                onClick={() => navigate('/products?category_id=45')} 
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}`)} 
                                 className="bg-[#5D6B60] hover:bg-[#4A574D] text-white px-8 md:px-12 py-3 md:py-4 rounded-md font-black text-[10px] md:text-xs transition-all shadow-lg active:scale-95 uppercase tracking-widest"
                             >
-                                Shop Now &rarr;
+                                Shop Curated &rarr;
                             </button>
-                            <button className="text-[#2d231b] hover:text-[#5D6B60] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn">
+                            <button 
+                                onClick={() => navigate(`/products?category_id=${rootCategoryId}&sort=popularity`)}
+                                className="text-[#2d231b] hover:text-[#5D6B60] font-black text-[10px] md:text-xs transition-all uppercase tracking-widest flex items-center gap-2 group/btn"
+                            >
                                 Explore Deals <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
                             </button>
                         </div>

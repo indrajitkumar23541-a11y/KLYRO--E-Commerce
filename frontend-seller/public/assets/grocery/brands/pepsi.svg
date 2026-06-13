@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid meet">
+  <circle cx="60" cy="60" r="40" fill="none" stroke="#2d2d2d" stroke-width="8"/>
+  <path fill="#2d2d2d" d="M60 20c-22 0-40 18-40 40 0 10 5 18 12 24 10-12 28-12 40 0 10-6 28-6 28-24 0-22-18-40-40-40z"/>
+  <text x="180" y="80" font-family="'Arial Black', sans-serif" font-weight="900" font-size="64" text-anchor="middle" letter-spacing="-5" fill="#1a1a1a">pepsi</text>
+</svg>

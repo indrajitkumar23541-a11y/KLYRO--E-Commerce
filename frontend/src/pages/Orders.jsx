@@ -166,6 +166,13 @@ const Orders = () => {
                                     <div className="text-right space-y-1">
                                         <p>Order ID</p>
                                         <p className="text-gray-200 group-hover:text-gray-900 transition-colors">#KY{order?.id}</p>
+                                        {order?.return_status && (
+                                            <div className="pt-2">
+                                                <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${order.return_status === 'pending' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                                                    Return {order.return_status}
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -220,9 +227,10 @@ const Orders = () => {
                                         </button>
                                         <button
                                             onClick={() => navigate(`/order/${order?.id}/return`)}
-                                            className="w-full border border-gray-100 hover:border-gray-300 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-600 transition-all text-center"
+                                            disabled={!!order?.return_status}
+                                            className={`w-full border py-3 text-[10px] font-bold uppercase tracking-widest transition-all text-center ${order?.return_status ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed' : 'border-gray-100 hover:border-gray-300 text-gray-600'}`}
                                         >
-                                            Return Items
+                                            {order?.return_status ? 'Return Logged' : 'Return Items'}
                                         </button>
                                         <button
                                             onClick={() => {
