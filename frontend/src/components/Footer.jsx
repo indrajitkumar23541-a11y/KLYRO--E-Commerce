@@ -4,7 +4,7 @@ import { Instagram, Twitter, Facebook, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
     return (
-        <footer className="bg-[#1e2d41] pt-16 md:pt-24 pb-12 px-6 md:px-12 border-t border-white/5 text-white">
+        <footer className="bg-[#1e2d41] pt-16 md:pt-24 pb-32 md:pb-12 px-6 md:px-12 border-t border-white/5 text-white">
             <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-24">
                 
                 {/* Brand */}
@@ -22,7 +22,7 @@ const Footer = () => {
                     <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                         Elevating your wardrobe with curated luxury pieces. Defining the future of digital fashion commerce.
                     </p>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 justify-center sm:justify-start">
                         <Instagram className="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-all duration-300 hover:scale-110" />
                         <Twitter className="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-all duration-300 hover:scale-110" />
                         <Facebook className="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-all duration-300 hover:scale-110" />
@@ -55,7 +55,7 @@ const Footer = () => {
                 <div className="space-y-6">
                     <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Newsletter</h4>
                     <p className="text-slate-400 text-xs leading-relaxed">Join our elite list for exclusive collection drops.</p>
-                    <div className="relative group max-w-sm">
+                    <div className="relative group w-full max-w-sm">
                         <input 
                             type="email" 
                             placeholder="Email Address" 

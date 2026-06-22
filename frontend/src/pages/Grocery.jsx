@@ -60,7 +60,7 @@ const Grocery = () => {
 
 
     return (
-        <div className="bg-[#fffdfa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fffdfa] min-h-screen pt-[56px] md:pt-[64px] pb-28 md:pb-24 page-transition font-sans relative">
             {/* Background Texture Overlay */}
             <div className="bg-paper" />
 

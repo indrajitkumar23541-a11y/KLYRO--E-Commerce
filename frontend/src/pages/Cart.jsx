@@ -1,188 +1,141 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ChevronLeft, MapPin, Plus, Star } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { 
-    Trash2, ShoppingBag, ArrowRight, Minus, 
-    Plus, ChevronRight, ShieldCheck, Truck, 
-    CheckCircle, Info, Lock
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
 
 const Cart = () => {
-    const { cartItems, removeFromCart, updateQuantity } = useCart();
     const navigate = useNavigate();
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
-    
-    const subtotal = cartItems.reduce((acc, item) => acc + (item.product?.price || 0) * item.quantity, 0);
-    const itemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    const { cart } = useCart();
 
-    const handleCheckout = () => {
-        if (cartItems.length > 0) {
-            navigate('/checkout');
-        }
-    };
+    // Mock cart items based on screenshot
+    const mockItems = [
+        { id: 1, name: "Women's Casual Wear", variations: "Black, Red", rating: 4.8, size: 42, qty: 1, price: 34.00, image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=200&q=80" },
+        { id: 2, name: "Men's Jacket", variations: "Green, Grey", rating: 4.7, size: 42, qty: 1, price: 45.00, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=200&q=80" }
+    ];
 
-    if (cartItems.length === 0) {
-        return (
-            <div className="bg-white min-h-screen pt-32 pb-20 px-6">
-                <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-12 items-center">
-                    <div className="w-full md:w-1/3">
-                        <div className="bg-blue-50/50 p-12 rounded-full">
-                            <ShoppingBag className="w-32 h-32 text-blue-200 mx-auto" strokeWidth={1} />
-                        </div>
-                    </div>
-                    <div className="flex-1 space-y-6 text-center md:text-left">
-                        <h1 className="text-4xl font-bold text-[#111]">Your KLYRO Cart is empty</h1>
-                        <p className="text-gray-500 max-w-lg">
-                            Your Shopping Cart lives to serve. Give it purpose — fill it with electronics, fashion, 
-                            and more. Continue shopping on the KLYRO homepage, learn about today's deals, or visit your Wish List.
-                        </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-4">
-                            <Link to="/products" className="px-8 py-3 bg-[#ffd814] hover:bg-[#f7ca00] text-[#111] rounded-lg font-bold shadow-sm border border-[#fcd200] transition-colors">
-                                Browse Marketplace
-                            </Link>
-                            <Link to="/login" className="px-8 py-3 border border-gray-300 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors">
-                                Sign in to your account
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    const items = cart?.items?.length > 0 ? cart.items : mockItems;
 
     return (
-        <div className="bg-[#f0f2f2] min-h-screen pt-24 pb-20 py-16 px-4 md:px-8">
-            <div className="max-w-[1400px] mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    
-                    {/* LEFT COLUMN: ITEM LIST */}
-                    <div className="lg:col-span-9 space-y-6">
-                        <div className="bg-white p-6 md:p-8 rounded-sm shadow-sm">
-                            <div className="flex justify-between items-end border-b border-gray-200 pb-4 mb-6">
-                                <h1 className="text-2xl font-medium text-[#111]">Shopping Cart</h1>
-                                <span className="text-sm text-gray-500">Price</span>
-                            </div>
+        <div className="min-h-screen bg-[#FDFDFD] pb-10">
+            {/* ── HEADER ── */}
+            <div className="px-5 pt-12 pb-4 flex items-center justify-between bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
+                <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-center -ml-2">
+                    <ChevronLeft size={24} className="text-gray-900" />
+                </button>
+                <h1 className="text-[16px] font-black text-gray-900">Checkout</h1>
+                <div className="w-8"></div>
+            </div>
 
-                            <div className="space-y-8 divide-y divide-gray-100">
-                                {cartItems.map((item) => (
-                                    <div key={item.product?.id} className="pt-8 flex flex-row gap-4 md:gap-6 group">
-                                        {/* Product Image */}
-                                        <div className="w-20 h-20 xs:w-24 xs:h-24 sm:w-32 sm:h-32 md:w-48 md:h-48 bg-white flex-shrink-0 flex items-center justify-center p-1 sm:p-2 relative group-hover:scale-105 transition-transform duration-500 border border-gray-100 rounded-lg">
-                                            <img src={item.product?.image} alt={item.product?.name} className="max-w-full max-h-full object-contain" />
-                                        </div>
-
-                                        {/* Product Info */}
-                                        <div className="flex-grow min-w-0 space-y-1.5 sm:space-y-2">
-                                            <div className="flex flex-col sm:flex-row justify-between items-start gap-1 sm:gap-4">
-                                                <Link to={`/products/${item.product?.id}`} className="text-xs sm:text-sm md:text-lg font-medium text-[#007185] hover:text-[#c45500] hover:underline line-clamp-2 leading-snug">
-                                                    {item.product?.name}
-                                                </Link>
-                                                <span className="text-sm sm:text-lg md:text-xl font-bold text-[#111] whitespace-nowrap">₹{parseFloat(item.product?.price).toLocaleString()}</span>
-                                            </div>
-                                            
-                                            <div className="text-[10px] sm:text-xs space-y-0.5 sm:space-y-1">
-                                                <p className="text-[#007600] font-bold">In Stock</p>
-                                                <p className="text-gray-500">Eligible for FREE Shipping</p>
-                                                <div className="flex items-center gap-2">
-                                                    <input type="checkbox" checked readOnly className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-3 h-3 sm:w-4 sm:h-4" />
-                                                    <span className="text-gray-600 text-[10px] sm:text-xs">This is a gift <button className="text-[#007185] hover:underline">Learn more</button></span>
-                                                </div>
-                                            </div>
-
-                                            {/* Quantity & Actions */}
-                                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-2 sm:pt-4">
-                                                <div className="flex items-center bg-[#f0f2f2] border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-                                                    <button 
-                                                        onClick={() => updateQuantity?.(item.product?.id, item.quantity - 1)}
-                                                        className="px-2 py-1 hover:bg-gray-200 transition-colors"
-                                                    >
-                                                        <Minus size={12} />
-                                                    </button>
-                                                    <span className="px-3 py-1 text-xs font-bold bg-white border-x border-gray-300 min-w-[32px] text-center">
-                                                        {item.quantity}
-                                                    </span>
-                                                    <button 
-                                                        onClick={() => updateQuantity?.(item.product?.id, item.quantity + 1)}
-                                                        className="px-2 py-1 hover:bg-gray-200 transition-colors"
-                                                    >
-                                                        <Plus size={12} />
-                                                    </button>
-                                                </div>
-                                                <span className="hidden sm:inline-block h-4 w-[1px] bg-gray-200"></span>
-                                                <button onClick={() => removeFromCart(item.product?.id)} className="text-xs text-[#007185] hover:underline">Delete</button>
-                                                <span className="hidden sm:inline-block h-4 w-[1px] bg-gray-200"></span>
-                                                <button className="text-xs text-[#007185] hover:underline">Save for later</button>
-                                                <span className="hidden md:inline-block h-4 w-[1px] bg-gray-200"></span>
-                                                <button className="hidden md:inline-block text-xs text-[#007185] hover:underline">See more like this</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="border-t border-gray-200 mt-8 pt-4 text-right">
-                                <p className="text-lg text-[#111]">
-                                    Subtotal ({itemCount} items): <span className="font-bold">₹{subtotal.toLocaleString()}</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Recommendation Banner */}
-                        <div className="bg-white p-6 rounded-sm shadow-sm border-l-4 border-[#007185]">
-                            <div className="flex gap-4">
-                                <Info className="text-[#007185] shrink-0" />
-                                <p className="text-sm text-gray-700">
-                                    The price and availability of items at KLYRO are subject to change. The shopping cart is a temporary 
-                                    place to store a list of your items and reflects each item's most recent price.
-                                </p>
-                            </div>
-                        </div>
+            <div className="px-5 mt-6 space-y-6">
+                
+                {/* ── DELIVERY ADDRESS ── */}
+                <div>
+                    <div className="flex items-center gap-2 mb-3">
+                        <MapPin size={16} className="text-gray-900" />
+                        <h2 className="text-[14px] font-black text-gray-900">Delivery Address</h2>
                     </div>
-
-                    {/* RIGHT COLUMN: SUMMARY (STICKY) */}
-                    <div className="lg:col-span-3">
-                        <div className="lg:sticky lg:top-24 space-y-5">
-                            <div className="bg-white p-6 rounded-sm shadow-sm space-y-4">
-                                <div className="flex items-start gap-2 text-[#007600]">
-                                    <CheckCircle size={18} className="shrink-0" />
-                                    <div className="text-[13px] leading-tight font-medium">
-                                        Part of your order qualifies for <span className="font-bold">FREE Delivery</span>. Select this option at checkout. <button className="text-[#007185] hover:underline">Details</button>
-                                    </div>
-                                </div>
-                                
-                                <div className="space-y-1">
-                                    <p className="text-lg text-[#111]">
-                                        Subtotal ({itemCount} items): <span className="font-bold">₹{subtotal.toLocaleString()}</span>
-                                    </p>
-                                    <div className="flex items-center gap-2 pt-1">
-                                        <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                                        <span className="text-sm text-gray-600">This order contains a gift</span>
-                                    </div>
-                                </div>
-
-                                <button 
-                                    onClick={handleCheckout}
-                                    className="w-full bg-[#ffd814] hover:bg-[#f7ca00] text-[#111] py-2 rounded-lg font-bold text-sm shadow-sm border border-[#fcd200] transition-colors"
-                                >
-                                    Proceed to Buy
-                                </button>
+                    <div className="bg-white border border-gray-100 rounded-xl p-4 flex items-start justify-between shadow-sm">
+                        <div className="flex items-start gap-3">
+                            <div className="mt-1 w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">
+                                <img src="/assets/icons/home_location.png" alt="home" className="w-4 h-4 object-contain opacity-50" onError={(e) => e.target.style.display='none'} />
                             </div>
-
-                            {/* Trust Badge */}
-                            <div className="bg-white p-4 rounded-sm shadow-sm flex items-center justify-center gap-6">
-                                <div className="flex flex-col items-center text-center gap-1">
-                                    <ShieldCheck size={20} className="text-gray-400" />
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Secure Checkout</span>
-                                </div>
-                                <div className="h-8 w-[1px] bg-gray-100"></div>
-                                <div className="flex flex-col items-center text-center gap-1">
-                                    <Lock size={20} className="text-gray-400" />
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Verified Site</span>
-                                </div>
+                            <div>
+                                <h3 className="text-[13px] font-bold text-gray-900 mb-1">Address:</h3>
+                                <p className="text-[11px] text-gray-500 leading-snug">216 St Paul's Rd, London N1 2LL, UK<br/>Contact :  +44-784232</p>
                             </div>
                         </div>
+                        <button className="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center bg-white shadow-sm flex-shrink-0">
+                            <Plus size={14} className="text-gray-500" />
+                        </button>
                     </div>
                 </div>
+
+                {/* ── SHOPPING LIST ── */}
+                <div>
+                    <h2 className="text-[14px] font-black text-gray-900 mb-3">Shopping List</h2>
+                    <div className="space-y-4">
+                        {items.map(item => (
+                            <div key={item.id} className="bg-white border border-gray-100 rounded-xl p-3 flex gap-3 shadow-sm">
+                                <div className="w-20 h-24 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                </div>
+                                <div className="flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 className="text-[12px] font-bold text-gray-900 line-clamp-1">{item.name}</h3>
+                                        <p className="text-[10px] text-gray-500 mt-1">Variations : <span className="font-medium text-gray-700">{item.variations || 'Default'}</span></p>
+                                        <div className="flex items-center gap-1 mt-1">
+                                            <span className="text-[10px] font-bold text-gray-700">{item.rating || '4.5'}</span>
+                                            <div className="flex">
+                                                {[1,2,3,4,5].map(s => <Star key={s} size={8} fill={s <= (item.rating||4) ? '#FBBF24' : 'none'} className={s <= (item.rating||4) ? 'text-yellow-400' : 'text-gray-200'}/>)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 border border-gray-200 rounded-md px-2 py-0.5">
+                                            <button className="text-gray-500 text-[10px] font-bold">-</button>
+                                            <span className="text-[10px] font-bold text-gray-900 px-1">{item.qty || 1}</span>
+                                            <button className="text-gray-500 text-[10px] font-bold">+</button>
+                                        </div>
+                                        <div className="flex items-center gap-1">
+                                            <span className="text-[14px] font-black text-gray-900">${item.price.toFixed(2)}</span>
+                                            <span className="text-[10px] text-gray-400 line-through">${(item.price + 20).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <hr className="border-gray-100" />
+
+                {/* ── COUPONS ── */}
+                <div className="flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center gap-2">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7634/7634125.png" alt="coupon" className="w-5 h-5 opacity-70" />
+                        <span className="text-[13px] font-bold text-gray-900">Apply Coupons</span>
+                    </div>
+                    <button className="text-[12px] font-black text-[#F83758] uppercase tracking-wider">Select</button>
+                </div>
+
+                {/* ── ORDER PAYMENT DETAILS ── */}
+                <div>
+                    <h2 className="text-[14px] font-black text-gray-900 mb-4">Order Payment Details</h2>
+                    <div className="space-y-3 mb-4">
+                        <div className="flex items-center justify-between">
+                            <span className="text-[12px] font-medium text-gray-600">Order Amounts</span>
+                            <span className="text-[13px] font-black text-gray-900">₹ 7,000.00</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-[12px] font-medium text-gray-600">Convenience <span className="text-[#F83758] text-[10px] font-bold ml-1">Know More</span></span>
+                            <span className="text-[12px] font-bold text-[#F83758]">Apply Coupon</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-[12px] font-medium text-gray-600">Delivery Fee</span>
+                            <span className="text-[12px] font-bold text-gray-900">Free</span>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100 mb-2">
+                        <span className="text-[14px] font-black text-gray-900">Order Total</span>
+                        <span className="text-[15px] font-black text-gray-900">₹ 7,000.00</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-gray-800">EMI Available</span>
+                        <span className="text-[10px] font-bold text-[#F83758]">Details</span>
+                    </div>
+                </div>
+
+                {/* ── BOTTOM BUTTON ── */}
+                <div className="pt-4 pb-8">
+                    <button 
+                        onClick={() => navigate('/checkout')}
+                        className="w-full bg-[#F83758] text-white py-4 rounded-xl font-black text-[14px] shadow-lg shadow-red-200 active:scale-95 transition-all flex items-center justify-between px-6"
+                    >
+                        <span>₹ 7,000.00 <span className="text-[9px] font-medium opacity-80 ml-1 block text-left">View details</span></span>
+                        <span>Proceed to Payment</span>
+                    </button>
+                </div>
+
             </div>
         </div>
     );

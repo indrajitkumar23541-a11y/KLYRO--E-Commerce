@@ -87,7 +87,7 @@ const Navbar = () => {
 
     return (
         <>
-            <header className="fixed top-0 left-0 w-full z-[100] shadow-2xl animate-reveal">
+            <header className="hidden md:block fixed top-0 left-0 w-full z-[100] shadow-2xl animate-reveal">
                 {/* TOP ROW: Logo, Search, User Icons */}
                 <div className="header-top h-[56px] md:h-[64px] flex items-center px-4 md:px-10 lg:px-16 gap-4 md:gap-10 bg-black/80 backdrop-blur-2xl border-b border-white/10 relative overflow-hidden">
                     {/* Background Glow Effect */}

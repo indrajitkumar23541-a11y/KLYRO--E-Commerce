@@ -1,4 +1,4 @@
-const { pool } = require('./config/db');
+const { pool } = require('./src/shared/config/db');
 const fs = require('fs').promises;
 const path = require('path');
 

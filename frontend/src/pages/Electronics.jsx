@@ -96,7 +96,7 @@ const Electronics = () => {
     ];
 
     return (
-        <div className="bg-[#f8f9fa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
+        <div className="bg-[#f8f9fa] min-h-screen pt-[56px] md:pt-[64px] pb-28 md:pb-24 page-transition font-sans">
             
             {/* SUB-NAVBAR CATEGORIES (Sticky and Blue Theme) */}
             <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">

@@ -32,6 +32,9 @@ import WriteReview from './pages/WriteReview';
 import TrackOrder from './pages/TrackOrder';
 import ReturnOrder from './pages/ReturnOrder';
 import SearchPage from './pages/SearchPage';
+import GetStarted from './pages/GetStarted';
+import Onboarding from './pages/Onboarding';
+import ForgotPassword from './pages/ForgotPassword';
 
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -43,46 +46,58 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 const AppContent = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-success/:id" element={<OrderSuccess />} />
-          <Route path="/beauty-health" element={<BeautyHealth />} />
-          <Route path="/books-education" element={<BooksEducation />} />
-          <Route path="/electronics" element={<Electronics />} />
-          <Route path="/automotive" element={<Automotive />} />
-          <Route path="/fashion" element={<Fashion />} />
-          <Route path="/grocery" element={<Grocery />} />
-          <Route path="/home-living" element={<HomeLiving />} />
-          <Route path="/kids-baby" element={<KidsBaby />} />
-          <Route path="/sports-fitness" element={<SportsFitness />} />
-          <Route path="/others" element={<Others />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/register-seller" element={<SellerRegister />} />
-          <Route path="/product/:id/review" element={<WriteReview />} />
-          <Route path="/order/:id/track" element={<TrackOrder />} />
-          <Route path="/order/:id/return" element={<ReturnOrder />} />
-          <Route path="/search" element={<SearchPage />} />
-        </Routes>
-      </main>
-      <ProductExpert />
-      <BottomNav />
-      <Footer />
-    </div>
+    <Routes>
+      {/* ── STANDALONE SPLASH (no navbar/footer) ── */}
+      <Route path="/" element={<Onboarding />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/get-started" element={<GetStarted />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* ── MAIN APP (with navbar/footer) ── */}
+      <Route path="/*" element={
+        <div className="flex flex-col min-h-screen bg-gray-50">
+          <Navbar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/order-success/:id" element={<OrderSuccess />} />
+              <Route path="/order-success" element={<OrderSuccess />} />
+              <Route path="/beauty-health" element={<BeautyHealth />} />
+              <Route path="/books-education" element={<BooksEducation />} />
+              <Route path="/electronics" element={<Electronics />} />
+              <Route path="/automotive" element={<Automotive />} />
+              <Route path="/fashion" element={<Fashion />} />
+              <Route path="/grocery" element={<Grocery />} />
+              <Route path="/home-living" element={<HomeLiving />} />
+              <Route path="/kids-baby" element={<KidsBaby />} />
+              <Route path="/sports-fitness" element={<SportsFitness />} />
+              <Route path="/others" element={<Others />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/register-seller" element={<SellerRegister />} />
+              <Route path="/product/:id/review" element={<WriteReview />} />
+              <Route path="/order/:id/track" element={<TrackOrder />} />
+              <Route path="/order/:id/return" element={<ReturnOrder />} />
+              <Route path="/search" element={<SearchPage />} />
+            </Routes>
+          </main>
+          <ProductExpert />
+          <BottomNav />
+          <Footer />
+        </div>
+      } />
+    </Routes>
   );
 };
 

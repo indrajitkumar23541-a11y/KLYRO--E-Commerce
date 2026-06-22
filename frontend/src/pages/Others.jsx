@@ -111,7 +111,7 @@ const Others = () => {
     };
 
     return (
-        <div className="bg-[#fdfaf5] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans relative">
+        <div className="bg-[#fdfaf5] min-h-screen pt-[56px] md:pt-[64px] pb-28 md:pb-24 page-transition font-sans relative">
             {/* Paper Texture Overlay */}
 
 

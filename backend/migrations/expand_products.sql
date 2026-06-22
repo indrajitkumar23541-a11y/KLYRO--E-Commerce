@@ -35,6 +35,17 @@ PREPARE stmt FROM @preparedStatement;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+-- Add sku if not exists
+SET @columnname = "sku";
+SET @preparedStatement = (SELECT IF(
+  (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = @dbname AND TABLE_NAME = @tablename AND COLUMN_NAME = @columnname) > 0,
+  "SELECT 4",
+  "ALTER TABLE products ADD COLUMN sku VARCHAR(100) UNIQUE NULL AFTER id"
+));
+PREPARE stmt FROM @preparedStatement;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 -- Update existing products with dummy SKUs and stock if null/zero
 UPDATE products SET sku = CONCAT('SKU-', id) WHERE sku IS NULL;
 UPDATE products SET stock_quantity = 50 WHERE stock_quantity = 0;

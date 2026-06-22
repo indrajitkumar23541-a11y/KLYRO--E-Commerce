@@ -13,6 +13,9 @@
   --card-bg: #ffffff;
   --card-border: rgba(0,0,0,0.05);
   --surface: #fcfcfc;
+  /* Safe area insets for notch/home bar */
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
 }
 
 .dark {
@@ -27,12 +30,43 @@
 }
 
 @layer base {
+  html {
+    /* Prevent font size inflation on mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply font-sans antialiased overflow-x-hidden;
     color: var(--text-color);
     background-color: var(--bg-color);
     scroll-behavior: smooth;
     transition: background-color 0.5s ease, color 0.5s ease;
+    /* Better touch scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Minimum touch target sizes for accessibility */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline/icon-only small elements */
+  button.touch-sm, a.touch-sm {
+    min-height: unset;
+    min-width: unset;
+  }
+
+  /* Better tap highlight on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Input zoom prevention on iOS (font-size >= 16px prevents auto zoom) */
+  input, textarea, select {
+    font-size: max(16px, 1em);
   }
 }
 
@@ -66,8 +100,17 @@
     animation: reveal-left 0.6s cubic-bezier(0, 0.55, 0.45, 1) forwards;
   }
 
+  .animate-reveal-up {
+    animation: reveal-up 0.4s cubic-bezier(0, 0.55, 0.45, 1) forwards;
+  }
+
   .animate-fade-in {
     animation: fade-in 0.4s ease forwards;
+  }
+
+  /* Mobile Bottom Sheet slide-up animation */
+  .animate-sheet-up {
+    animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
   }
 
   @keyframes reveal {
@@ -85,15 +128,44 @@
     to { opacity: 1; transform: translateX(0); }
   }
 
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @keyframes fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
+  }
+
+  @keyframes sheet-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
   }
 
   .stagger-1 { animation-delay: 0.1s; }
   .stagger-2 { animation-delay: 0.2s; }
   .stagger-3 { animation-delay: 0.3s; }
   .stagger-4 { animation-delay: 0.4s; }
+
+  /* Mobile safe-area utilities */
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Bottom Nav Safe Area */
+  .bottom-nav-height {
+    height: calc(80px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Page padding for BottomNav (mobile only) */
+  .page-mobile-pb {
+    @apply pb-24 md:pb-0;
+  }
 }
 
 /* Premium Background Texture */
@@ -213,3 +285,125 @@
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ============================================
+   MOBILE BOTTOM SHEET PATTERN
+   Used for: Filters, Quick Actions, Modals
+   ============================================ */
+.mobile-bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  background: white;
+  border-radius: 24px 24px 0 0;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.15);
+  animation: sheet-up 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.mobile-bottom-sheet .sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 2px;
+  margin: 12px auto 20px;
+}
+
+/* ============================================
+   STICKY MOBILE CTA BAR
+   Used for: Cart, Product pages, Checkout
+   ============================================ */
+.mobile-sticky-cta {
+  position: fixed;
+  bottom: 80px; /* above BottomNav */
+  left: 0;
+  right: 0;
+  z-index: 180;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ============================================
+   FLOATING ACTION BUTTON (FAB)
+   Mobile-only quick actions
+   ============================================ */
+.mobile-fab {
+  position: fixed;
+  bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  right: 16px;
+  z-index: 170;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mobile-fab:active {
+  transform: scale(0.92);
+}
+
+/* ============================================
+   MOBILE CARD SWIPE GESTURES
+   ============================================ */
+.swipe-card {
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* ============================================
+   DARK MODE overrides
+   ============================================ */
+.dark .mobile-bottom-sheet {
+  background: #1a1a1c;
+}
+
+.dark .mobile-sticky-cta {
+  background: rgba(20, 20, 22, 0.97);
+  border-top-color: rgba(255,255,255,0.08);
+}
+
+/* ============================================
+   PRODUCT GRID — Mobile Optimized
+   ============================================ */
+.product-grid-mobile {
+  @apply grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+}
+
+/* ============================================
+   RESPONSIVE TEXT UTILITIES
+   ============================================ */
+.text-mobile-xs { @apply text-[10px] sm:text-xs; }
+.text-mobile-sm { @apply text-xs sm:text-sm; }
+.text-mobile-base { @apply text-sm sm:text-base; }
+.text-mobile-lg { @apply text-base sm:text-lg; }
+.text-mobile-xl { @apply text-lg sm:text-xl md:text-2xl; }
+
+/* ============================================
+   INPUT OVERRIDES for iOS
+   ============================================ */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="search"],
+textarea {
+  /* Prevent iOS zoom on focus (16px minimum) */
+  font-size: 16px !important;
+}
+
+/* But visually scale down if needed for design */
+@media (max-width: 640px) {
+  .input-sm-text {
+    font-size: 14px !important;
+  }
+}

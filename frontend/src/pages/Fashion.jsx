@@ -104,7 +104,7 @@ const Fashion = () => {
 
 
     return (
-        <div className="bg-[#fff9fa] min-h-screen pt-[56px] md:pt-[64px] pb-24 page-transition font-sans">
+        <div className="bg-[#fff9fa] min-h-screen pt-[56px] md:pt-[64px] pb-28 md:pb-24 page-transition font-sans">
             
             {/* SUB-NAVBAR CATEGORIES (Sticky and Rose Theme) */}
             <div className="bg-white border-b sticky top-[56px] md:top-[64px] z-50 overflow-x-auto whitespace-nowrap no-scrollbar shadow-sm transition-all duration-300">
@@ -149,7 +149,7 @@ const Fashion = () => {
                     <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-12 lg:px-24 max-w-[1440px] mx-auto space-y-4 md:space-y-6">
 
                         <div className="space-y-2 md:space-y-4">
-                            <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-[#4c0519] tracking-tight leading-[0.9]">
+                            <h1 className="text-3xl sm:text-5xl lg:text-8xl font-black text-[#4c0519] tracking-tight leading-[0.9]">
                                 Fashion <span className="text-pink-600">Luxe</span>
                             </h1>
                             <p className="text-sm md:text-xl lg:text-2xl font-bold text-slate-600 tracking-tight leading-relaxed max-w-lg mb-4 md:mb-8 uppercase">
